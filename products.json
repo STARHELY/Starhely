@@ -96,5 +96,54 @@
       "shop": "星禾优选云南好物"
     },
     "scanCount": 0
+  },
+  "XHHT2026061601": {
+    "brand": "星禾优选",
+    "name": "云南巧家核桃",
+    "subtitle": "",
+    "productType": "HT",
+    "coverImg": "cover_XHHT2026061601.jpg",
+    "origin": "云南省昭通市",
+    "altitude": "1200-1800米",
+    "pickDate": "2026年7月15日",
+    "processingTime": "2026年7月15日",
+    "produceDate": "2026年7月16日",
+    "netWeight": "250g",
+    "shelfLife": "24个月",
+    "batchNo": "XHHT2026061601",
+    "originDesc": "云南省昭通市巧家县，地处金沙江畔，属于北纬27°高原山地气候，日照充足，昼夜温差大，土壤肥沃，水源纯净，造就了优良品质。",
+    "originTags": [
+      "高山种植",
+      "日照充足",
+      "土壤肥沃",
+      "水源纯净"
+    ],
+    "originPhoto": "origin_XHHT2026061601.jpg",
+    "farmerName": "李德恒",
+    "farmerPhoto": "farmer_XHHT2026061601.jpg",
+    "farmerExp": "15",
+    "farmerArea": "8.5亩",
+    "farmerMethod": "生态种植",
+    "harvestPhotos": [
+      "harvest_XHHT2026061601_1.jpg",
+      "harvest_XHHT2026061601_2.jpg"
+    ],
+    "reports": [
+      {
+        "title": "农残检测报告",
+        "img": "img_report.jpg",
+        "imgName": "img_report.jpg"
+      }
+    ],
+    "productImgs": [],
+    "videos": [],
+    "brandStory": "扎根昭通滇东北高原，星禾优选溯源管理系统，记录青花椒、昭通苹果、高山土豆、核桃、板栗全生长流通链路。一码溯源，产地、种植、检测、物流全程透明可查，以数字守护本土农产品质，让山野好物的来路清晰可见，让云南高原风味安心奔赴全国与世界。",
+    "contact": {
+      "phone": "15758099554",
+      "wechat": "STARHE_LIGHTYEAR",
+      "address": "云南省昭通市",
+      "shop": "星禾优选云南好物"
+    },
+    "scanCount": 0
   }
 }
