@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -9,10 +8,6 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{max-width:750px;margin:0 auto;background:#f5f0e8;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;color:#333;-webkit-font-smoothing:antialiased}
 img{max-width:100%;display:block}
-
-/* 顶部横幅图 */
-.banner{width:100%;overflow:hidden;background:#1e3f1a}
-.banner img{width:100%;height:auto;min-height:120px;object-fit:cover;display:block}
 
 /* 欢迎区域 */
 .welcome{position:relative;padding:36px 24px 28px;text-align:center;overflow:hidden}
@@ -69,7 +64,8 @@ img{max-width:100%;display:block}
 .origin-desc{font-size:14px;line-height:1.9;color:#555;margin-bottom:16px}
 .origin-tags{display:flex;gap:8px;flex-wrap:wrap}
 .origin-tag{background:#e8f5e9;color:#2d5a27;padding:6px 14px;border-radius:20px;font-size:12px}
-.origin-photo{width:100%;border-radius:12px;margin-bottom:16px}
+.origin-photo-wrap{position:relative;width:100%;padding-bottom:56.25%;border-radius:12px;overflow:hidden;margin-bottom:16px;cursor:pointer;background:#e8e0d0}
+.origin-photo-wrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 
 /* 农户 */
 .farmer-card{display:flex;gap:16px;align-items:flex-start}
@@ -130,6 +126,7 @@ img{max-width:100%;display:block}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 .scan-info{text-align:center;padding:8px;font-size:12px;color:#999}
+.scan-info .scan-num{font-weight:700;color:#2d5a27}
 </style>
 </head>
 <body>
@@ -148,7 +145,6 @@ img{max-width:100%;display:block}
 
 <script>
 const PRODUCT_ID = new URLSearchParams(window.location.search).get('id') || '';
-const BANNER_URL = 'banner.jpg?t=' + Date.now();
 const MOUNTAIN_BG_URL = 'mountain_bg.jpg';
 
 async function loadJSON(url) {
@@ -247,16 +243,7 @@ function render(p, carousel) {
     return;
   }
 
-  // 1. 顶部横幅图
-  let bannerHTML = `
-    <div class="banner" id="bannerArea">
-      <div style="background:linear-gradient(135deg,#2d5a27,#1e3f1a);height:140px;display:flex;align-items:center;justify-content:center">
-        <span style="color:rgba(255,255,255,0.5);font-size:14px;letter-spacing:2px">🌿 星禾优选</span>
-      </div>
-    </div>
-  `;
-
-  // 2. 欢迎区域
+  // 1. 欢迎区域
   let welcomeHTML = `
     <div class="welcome">
       <div class="welcome-bg" style="background-image:url('${MOUNTAIN_BG_URL}')"></div>
@@ -271,7 +258,7 @@ function render(p, carousel) {
     </div>
   `;
 
-  // 3. 轮播图区域
+  // 2. 轮播图区域
   carouselImgs = (carousel && carousel.length > 0) ? carousel : [];
   let carouselHTML = '';
   if (carouselImgs.length > 0) {
@@ -349,7 +336,6 @@ function render(p, carousel) {
   const shop = p.contact?.shop || '';
 
   document.getElementById('app').innerHTML = `
-    ${bannerHTML}
     ${welcomeHTML}
     ${carouselHTML}
     <div class="container">
@@ -385,7 +371,7 @@ function render(p, carousel) {
           <div class="card-title">产地溯源</div>
         </div>
         <div class="card-body">
-          ${p.originPhoto ? `<img class="origin-photo" src="${p.originPhoto}" alt="产地实拍" onclick="openViewer('${p.originPhoto}')">` : ''}
+          ${p.originPhoto ? `<div class="origin-photo-wrap" onclick="openViewer('${p.originPhoto}')"><img src="${p.originPhoto}" alt="产地实拍"></div>` : ''}
           <div class="origin-desc">${p.originDesc}</div>
           <div class="origin-tags">
             ${(p.originTags||[]).map(t => `<span class="origin-tag">${t}</span>`).join('')}
@@ -496,7 +482,7 @@ function render(p, carousel) {
         </div>
       </div>
 
-      <div class="scan-info">该页面已被扫码 ${p.scanCount || 0} 次</div>
+      <div class="scan-info">该页面已被扫码 <span class="scan-num" id="scanCount">--</span> 次</div>
     </div>
 
     <div class="footer">
@@ -505,6 +491,83 @@ function render(p, carousel) {
       <div class="footer-line3">星禾光年（昭通）文化有限公司旗下电商平台</div>
     </div>
   `;
+}
+
+// ====== 扫码计数 ======
+const SCAN_COUNT_FILE = 'scan_counts.json';
+const GITHUB_API = 'https://api.github.com';
+
+function getGitHubConfig() {
+  try {
+    const c = localStorage.getItem('trace_config');
+    return c ? JSON.parse(c) : null;
+  } catch(e) { return null; }
+}
+
+async function updateScanCount(productId) {
+  const el = document.getElementById('scanCount');
+  if (!el || !productId) { if(el) el.textContent = '0'; return; }
+  
+  const cfg = getGitHubConfig();
+  if (!cfg || !cfg.token || !cfg.owner || !cfg.repo) {
+    // 没有 GitHub token（访客设备），只显示 products.json 中的计数
+    el.textContent = '0';
+    return;
+  }
+  
+  const { owner, repo, token } = cfg;
+  const apiUrl = `${GITHUB_API}/repos/${owner}/${repo}/contents/${SCAN_COUNT_FILE}`;
+  
+  try {
+    // 1. 读取当前 scan_counts.json
+    let counts = {};
+    let sha = null;
+    try {
+      const resp = await fetch(apiUrl, { headers: { 'Authorization': `token ${token}` } });
+      if (resp.ok) {
+        const data = await resp.json();
+        sha = data.sha;
+        const rawStr = atob(data.content);
+        const utf8Str = decodeURIComponent(escape(rawStr));
+        counts = JSON.parse(utf8Str);
+      }
+    } catch(e) { /* 文件不存在，从空开始 */ }
+    
+    // 2. 递增计数（同一 session 不重复计数）
+    const sessionKey = 'scan_session_' + productId;
+    if (!sessionStorage.getItem(sessionKey)) {
+      counts[productId] = (counts[productId] || 0) + 1;
+      sessionStorage.setItem(sessionKey, '1');
+    }
+    
+    // 3. 写回 GitHub
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(counts, null, 2))));
+    const body = {
+      message: `Update scan count for ${productId}`,
+      content: content,
+      branch: 'main'
+    };
+    if (sha) body.sha = sha;
+    
+    const putResp = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `token ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+    
+    if (putResp.ok || putResp.status === 409) {
+      // 显示最新计数
+      el.textContent = counts[productId] || 0;
+    } else {
+      el.textContent = counts[productId] || 0;
+    }
+  } catch(e) {
+    console.warn('扫码计数失败:', e);
+    el.textContent = '0';
+  }
 }
 
 // 启动
@@ -523,17 +586,8 @@ function render(p, carousel) {
   // 启动轮播图自动播放
   startCarousel();
   
-  // 尝试加载banner图替换默认头部
-  if (product) {
-    const bannerImg = new Image();
-    bannerImg.onload = function() {
-      const bannerArea = document.getElementById('bannerArea');
-      if (bannerArea) {
-        bannerArea.innerHTML = '<img src="' + BANNER_URL + '" alt="星禾优选">';
-      }
-    };
-    bannerImg.src = BANNER_URL;
-  }
+  // 更新真实扫码计数
+  updateScanCount(PRODUCT_ID);
 })();
 </script>
 </body>
