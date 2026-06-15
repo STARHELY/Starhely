@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>云南巧家青花椒 · 产品溯源</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{max-width:750px;margin:0 auto;background:#f5f0e8;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;color:#333;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+
+/* 顶部品牌区 */
+.header{background:linear-gradient(135deg,#2d5a27,#1e3f1a);padding:40px 24px 32px;text-align:center;position:relative;overflow:hidden}
+.header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:24px;background:#f5f0e8;border-radius:24px 24px 0 0}
+.header .logo{width:72px;height:72px;background:rgba(255,255,255,0.15);border-radius:50%;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,0.3)}
+.header .logo svg{width:36px;height:36px}
+.header h1{font-size:26px;color:#fff;font-weight:700;letter-spacing:3px;margin-bottom:6px}
+.header .subtitle{font-size:14px;color:rgba(255,255,255,0.7);letter-spacing:2px}
+.header .auth{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.12);padding:6px 16px;border-radius:20px;margin-top:14px;font-size:12px;color:rgba(255,255,255,0.8)}
+
+/* 容器 */
+.container{padding:16px;padding-bottom:40px}
+
+/* 标签条 */
+.tags-bar{display:flex;justify-content:center;gap:12px;padding:12px 16px;flex-wrap:wrap}
+.tag-item{display:flex;flex-direction:column;align-items:center;gap:4px}
+.tag-circle{width:42px;height:42px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.tag-label{font-size:11px;color:#666}
+
+/* 卡片 */
+.card{background:#fff;border-radius:16px;margin-bottom:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.04)}
+.card-header{padding:16px 20px 12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #f0f0f0}
+.card-icon{width:28px;height:28px;background:#e8f5e9;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px}
+.card-title{font-size:16px;font-weight:600;color:#2d5a27}
+.card-body{padding:20px}
+
+/* 产品图片轮播 */
+.gallery{position:relative;width:100%;overflow:hidden;border-radius:16px 16px 0 0}
+.gallery img{width:100%;height:220px;object-fit:cover}
+.gallery-badge{position:absolute;bottom:12px;left:12px;background:rgba(0,0,0,0.5);color:#fff;padding:4px 12px;border-radius:20px;font-size:12px;backdrop-filter:blur(4px)}
+
+/* 产品表格 */
+.info-table{width:100%}
+.info-table tr{border-bottom:1px solid #f5f5f5}
+.info-table tr:last-child{border-bottom:none}
+.info-table td{padding:12px 0;font-size:14px;vertical-align:top}
+.info-table td:first-child{color:#999;width:72px;white-space:nowrap}
+.info-table td:last-child{color:#333;font-weight:500}
+
+/* 产地描述 */
+.origin-desc{font-size:14px;line-height:1.9;color:#555;margin-bottom:16px}
+.origin-tags{display:flex;gap:8px;flex-wrap:wrap}
+.origin-tag{background:#e8f5e9;color:#2d5a27;padding:6px 14px;border-radius:20px;font-size:12px}
+
+/* 产地大图 */
+.origin-photo{width:100%;border-radius:12px;margin-bottom:16px}
+
+/* 农户信息 */
+.farmer-card{display:flex;gap:16px;align-items:flex-start}
+.farmer-avatar{width:80px;height:80px;border-radius:12px;object-fit:cover;flex-shrink:0}
+.farmer-avatar-placeholder{width:80px;height:80px;background:#e8e0d0;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:36px}
+.farmer-name{font-size:16px;font-weight:600;color:#333;margin-bottom:8px}
+.farmer-meta{font-size:13px;color:#666;line-height:1.8}
+
+/* 工艺流程 */
+.process-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.process-step{background:#f8f8f8;border-radius:12px;padding:16px;text-align:center}
+.step-icon{font-size:28px;margin-bottom:8px}
+.step-title{font-size:14px;font-weight:600;color:#333;margin-bottom:4px}
+.step-desc{font-size:12px;color:#888}
+
+/* 检测报告 */
+.report-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.report-item{border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);cursor:pointer;position:relative}
+.report-item img{width:100%;height:180px;object-fit:cover}
+.report-label{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.6);color:#fff;padding:8px;font-size:12px;text-align:center;backdrop-filter:blur(4px)}
+
+/* 视频 */
+.video-container{position:relative;border-radius:12px;overflow:hidden;margin-bottom:12px;background:#000}
+.video-container video{width:100%;display:block}
+.video-placeholder{width:100%;height:200px;background:linear-gradient(135deg,#2d5a27,#1e3f1a);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;cursor:pointer;border-radius:12px}
+.video-placeholder .play-icon{width:48px;height:48px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+.video-placeholder span{font-size:13px;opacity:0.8}
+
+/* 时间轴 */
+.timeline-row{display:flex;align-items:center;gap:12px;padding:14px 16px;background:#f8f8f8;border-radius:12px}
+.timeline-dot{width:10px;height:10px;background:#2d5a27;border-radius:50%;flex-shrink:0}
+.timeline-content{flex:1}
+.timeline-title{font-size:14px;font-weight:600;color:#333}
+.timeline-sub{font-size:12px;color:#888;margin-top:2px}
+
+/* 产品图展示 */
+.product-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.product-item{border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.product-item img{width:100%;height:160px;object-fit:cover}
+.product-item .p-label{padding:8px 12px;font-size:12px;color:#666;text-align:center;background:#f8f8f8}
+
+/* 底部 */
+.footer{background:#2d5a27;padding:32px 24px;text-align:center;margin-top:8px;position:relative}
+.footer::before{content:'';position:absolute;top:0;left:0;right:0;height:24px;background:#f5f0e8;border-radius:0 0 24px 24px}
+.footer-text{color:rgba(255,255,255,0.7);font-size:13px;line-height:1.8;padding-top:16px}
+.footer-brand{color:#fff;font-size:18px;font-weight:700;margin-top:16px;letter-spacing:3px}
+.footer-links{display:flex;justify-content:center;gap:24px;margin-top:20px}
+.footer-link{color:rgba(255,255,255,0.8);font-size:13px;text-decoration:none}
+
+/* 图片查看器 */
+.viewer{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:999;align-items:center;justify-content:center;cursor:pointer}
+.viewer.active{display:flex}
+.viewer img{max-width:95%;max-height:90vh;object-fit:contain}
+.viewer .close-btn{position:absolute;top:20px;right:20px;color:#fff;font-size:32px;cursor:pointer;width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.1);border-radius:50%}
+
+/* 加载 */
+.loading{text-align:center;padding:80px 20px;color:#888}
+.loading .spinner{width:32px;height:32px;border:3px solid #e0e0e0;border-top-color:#2d5a27;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* 扫码次数 */
+.scan-info{text-align:center;padding:8px;font-size:12px;color:#999}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div class="loading">
+    <div class="spinner"></div>
+    <div>加载中...</div>
+  </div>
+</div>
+
+<!-- 图片查看器 -->
+<div class="viewer" id="viewer" onclick="closeViewer()">
+  <div class="close-btn">×</div>
+  <img id="viewerImg" src="" alt="">
+</div>
+
+<script>
+const PRODUCT_ID = new URLSearchParams(window.location.search).get('id') || 'QJ2024052001';
+
+// ====== 产品数据库 ======
+// 部署到GitHub后，这里的数据可以替换为从 products.json 加载
+const PRODUCTS = {
+  "QJ2024052001": {
+    brand: "云南巧家山野",
+    name: "云南巧家干青花椒",
+    subtitle: "源自北纬27°的高山馈赠",
+    coverImg: "img_cover.jpg",
+    origin: "云南省昭通市巧家县",
+    altitude: "1200-1800米",
+    pickDate: "2024年5月15日",
+    produceDate: "2024年5月20日",
+    netWeight: "250g",
+    shelfLife: "18个月",
+    batchNo: "QJ2024052001",
+    originDesc: "云南省昭通市巧家县，地处金沙江畔，属于北纬27°高原山地气候，日照充足，昼夜温差大，土壤肥沃，水源纯净，非常适合青花椒生长，造就了果实饱满、麻香持久的优良品质。",
+    originTags: ["高山种植", "日照充足", "土壤肥沃", "水源纯净"],
+    originPhoto: "img_origin_farm.jpg",
+    farmerName: "李大哥",
+    farmerPhoto: "img_farmer.jpg",
+    farmerExp: "20年",
+    farmerArea: "50亩",
+    farmerMethod: "生态种植，不使用化肥农药",
+    processSteps: [
+      {icon:"🤲",title:"人工采摘",desc:"清晨逐穗手摘"},
+      {icon:"☀️",title:"天然晾晒",desc:"太阳直晒烘干"},
+      {icon:"🔍",title:"筛选去杂",desc:"多道人工筛选"},
+      {icon:"📦",title:"密封包装",desc:"锁鲜罐装封存"}
+    ],
+    reports: [
+      {title:"农残检测报告",img:"img_report.jpg"},
+      {title:"重金属检测报告",img:"img_report.jpg"}
+    ],
+    productImgs: [
+      {title:"干青花椒（成品）",img:"img_product.jpg"},
+      {title:"精选饱满颗粒",img:"img_cover.jpg"}
+    ],
+    // 视频（可选，没有则不显示）
+    videos: [],
+    brandStory: "我们来自云南巧家，世代以种植花椒为生，坚守传统农耕，不忘初心。只为给您带来一份来自高山的自然味道。",
+    contact: {
+      phone: "199 1234 5678",
+      wechat: "qiaojiahuajiao",
+      address: "云南省昭通市巧家县",
+      shop: "巧家山野"
+    },
+    scanCount: 128
+  }
+};
+
+function openViewer(src) {
+  document.getElementById('viewerImg').src = src;
+  document.getElementById('viewer').classList.add('active');
+}
+function closeViewer() {
+  document.getElementById('viewer').classList.remove('active');
+}
+
+function render() {
+  const p = PRODUCTS[PRODUCT_ID];
+  if (!p) {
+    document.getElementById('app').innerHTML = '<div style="text-align:center;padding:80px 20px;color:#e63946">未找到该产品溯源信息<br><span style="font-size:13px;color:#888">产品ID: ' + PRODUCT_ID + '</span></div>';
+    return;
+  }
+
+  let videosHTML = '';
+  if (p.videos && p.videos.length > 0) {
+    videosHTML = p.videos.map(v => `
+      <div class="video-container">
+        <video controls poster="${v.cover || ''}" preload="metadata">
+          <source src="${v.url}" type="video/mp4">
+        </video>
+      </div>
+    `).join('');
+  }
+
+  document.getElementById('app').innerHTML = `
+    <!-- 顶部 -->
+    <div class="header">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5">
+          <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z"/>
+          <path d="M12 6c-1.5 2-3 4-3 6s1.5 4 3 4 3-2 3-4-1.5-4-3-6z"/>
+          <path d="M8 10c1-1.5 2.5-2 4-2s3 .5 4 2"/>
+        </svg>
+      </div>
+      <h1>${p.name}</h1>
+      <div class="subtitle">${p.subtitle}</div>
+      <div class="auth">✓ 官方认证溯源</div>
+    </div>
+
+    <!-- 封面图 -->
+    <div class="gallery">
+      <img src="${p.coverImg}" alt="${p.name}">
+      <div class="gallery-badge">📍 ${p.origin}</div>
+    </div>
+
+    <div class="container">
+      <!-- 标签条 -->
+      <div class="tags-bar">
+        <div class="tag-item"><div class="tag-circle">📍</div><div class="tag-label">原产地</div></div>
+        <div class="tag-item"><div class="tag-circle">🤲</div><div class="tag-label">人工采摘</div></div>
+        <div class="tag-item"><div class="tag-circle">☀️</div><div class="tag-label">自然晾晒</div></div>
+        <div class="tag-item"><div class="tag-circle">✅</div><div class="tag-label">品质严选</div></div>
+        <div class="tag-item"><div class="tag-circle">🔍</div><div class="tag-label">放心溯源</div></div>
+      </div>
+
+      <!-- 产品信息 -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">📋</div>
+          <div class="card-title">产品信息</div>
+        </div>
+        <div class="card-body">
+          <table class="info-table">
+            <tr><td>品名</td><td>${p.name}</td></tr>
+            <tr><td>产地</td><td>${p.origin}</td></tr>
+            <tr><td>海拔</td><td>${p.altitude}</td></tr>
+            <tr><td>采摘时间</td><td>${p.pickDate}</td></tr>
+            <tr><td>生产日期</

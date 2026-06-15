@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>溯源系统 · 后台管理</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #f5f5f5;
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    padding: 20px;
+  }
+  .header {
+    background: #2d5a27;
+    color: #fff;
+    padding: 24px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+  .header h1 { font-size: 22px; margin-bottom: 8px; }
+  .header p { font-size: 14px; opacity: 0.8; }
+  
+  .form-section {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2d5a27;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f0f0f0;
+  }
+  
+  .form-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .form-group {
+    flex: 1;
+  }
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 6px;
+  }
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+  }
+  .form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+  .form-group input:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: #2d5a27;
+  }
+  
+  .btn-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+  }
+  .btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: #2d5a27;
+    color: #fff;
+  }
+  .btn-primary:hover { background: #1e3f1a; }
+  .btn-secondary {
+    background: #f0f0f0;
+    color: #333;
+  }
+  .btn-secondary:hover { background: #e0e0e0; }
+  
+  .success-msg {
+    background: #e8f5e9;
+    color: #2d5a27;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-top: 16px;
+    display: none;
+  }
+  .success-msg.show { display: block; }
+  
+  .product-list {
+    margin-top: 24px;
+  }
+  .product-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: #f8f8f8;
+    border-radius: 8px;
+    margin-bottom: 8px;
+  }
+  .product-item-name {
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .product-item-id {
+    font-size: 12px;
+    color: #888;
+  }
+</style>
+</head>
+<body>
+  <div class="header">
+    <h1>溯源系统 · 后台管理</h1>
+    <p>编辑产品信息，保存后生成对应二维码</p>
+  </div>
+  
+  <form id="productForm">
+    <!-- 基本信息 -->
+    <div class="form-section">
+      <div class="section-title">基本信息</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>产品ID（用于二维码）</label>
+          <input type="text" id="productId" placeholder="如：QJ2024052001" required>
+        </div>
+        <div class="form-group">
+          <label>品牌名称</label>
+          <input type="text" id="brand" placeholder="如：云南巧家山野" value="云南巧家山野">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>产品名称</label>
+          <input type="text" id="name" placeholder="如：云南巧家干青花椒" required>
+        </div>
+        <div class="form-group">
+          <label>副标题</label>
+          <input type="text" id="subtitle" placeholder="如：源自北纬27°的高山馈赠">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>产地</label>
+          <input type="text" id="origin" placeholder="如：云南省昭通市巧家县">
+        </div>
+        <div class="form-group">
+          <label>海拔</label>
+          <input type="text" id="altitude" placeholder="如：1200-1800米">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>采摘时间</label>
+          <input type="text" id="pickDate" placeholder="如：2024年5月15日">
+        </div>
+        <div class="form-group">
+          <label>生产日期</label>
+          <input type="text" id="produceDate" placeholder="如：2024年5月20日">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>净含量</label>
+          <input type="text" id="netWeight" placeholder="如：250g">
+        </div>
+        <div class="form-group">
+          <label>保质期</label>
+          <input type="text" id="shelfLife" placeholder="如：18个月">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>批次编号</label>
+          <input type="text" id="batchNo" placeholder="如：QJ2024052001">
+        </div>
+      </div>
+    </div>
+    
+    <!-- 产地溯源 -->
+    <div class="form-section">
+      <div class="section-title">产地溯源</div>
+      <div class="form-group">
+        <label>产地描述</label>
+        <textarea id="originDesc" rows="4">云南省昭通市巧家县，地处金沙江畔，属于北纬27°高原山地气候，日照充足，昼夜温差大，土壤肥沃，水源纯净，非常适合青花椒生长，造就了果实饱满、麻香持久的优良品质。</textarea>
+      </div>
+      <div class="form-group">
+        <label>产地标签（逗号分隔）</label>
+        <input type="text" id="originTags" value="高山种植,日照充足,土壤肥沃,水源纯净">
+      </div>
+    </div>
+    
+    <!-- 农户信息 -->
+    <div class="form-section">
+      <div class="section-title">种植基地 / 农户信息</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>负责人姓名</label>
+          <input type="text" id="farmerName" placeholder="如：李大哥">
+        </div>
+        <div class="form-group">
+          <label>种植经验</label>
+          <input type="text" id="farmerExp" placeholder="如：20年">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>种植面积</label>
+          <input type="text" id="farmerArea" placeholder="如：50亩">
+        </div>
+        <div class="form-group">
+          <label>种植方式</label>
+          <input type="text" id="farmerMethod" placeholder="如：生态种植，不使用化肥农药">
+        </div>
+      </div>
+    </div>
+    
+    <!-- 品牌故事 -->
+    <div class="form-section">
+      <div class="section-title">品牌故事</div>
+      <div class="form-group">
+        <label>品牌故事</label>
+        <textarea id="brandStory" rows="3">我们来自云南巧家，世代以种植花椒为生，坚守传统农耕，不忘初心。只为给您带来一份来自高山的自然味道。</textarea>
+      </div>
+    </div>
+    
+    <!-- 联系方式 -->
+    <div class="form-section">
+      <div class="section-title">联系我们</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>电话</label>
+          <input type="text" id="contactPhone" placeholder="如：199 1234 5678">
+        </div>
+        <div class="form-group">
+          <label>微信</label>
+          <input type="text" id="contactWechat" placeholder="如：qiaojiahuajiao">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>地址</label>
+          <input type="text" id="contactAddress" placeholder="如：云南省昭通市巧家县">
+        </div>
+        <div class="form-group">
+          <label>店铺名称</label>
+          <input type="text" id="contactShop" placeholder="如：巧家山野">
+        </div>
+      </div>
+    </div>
+    
+    <!-- 操作按钮 -->
+    <div class="btn-group">
+      <button type="submit" class="btn btn-primary">保存产品</button>
+      <button type="button" class="btn btn-secondary" onclick="previewProduct()">预览页面</button>
+      <button type="button" class="btn btn-secondary" onclick="generateQR()">生成二维码</button>
+    </div>
+    
+    <div id="successMsg" class="success-msg">✓ 保存成功！</div>
+  </form>
+  
+  <!-- 产品列表 -->
+  <div class="form-section product-list">
+    <div class="section-title">已保存产品</div>
+    <div id="productList">暂无产品</div>
+  </div>
+
+<script>
+  // 产品数据存储
+  let products = JSON.parse(localStorage.getItem('trace_products') || '{}');
+  
+  // 初始化
+  document.getElementById('productId').value = 'QJ' + new Date().getTime();
+  loadProductList();
+  
+  // 保存产品
+  document.getElementById('productForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    saveProduct();
+  });
+  
+  function saveProduct() {
+    const id = document.getElementById('productId').value.trim();
+    if (!id) { alert('请输入产品ID'); return; }
+    
+    const product = {
+      brand: document.getElementById('brand').value,
+      name: document.getElementById('name').value,
+      subtitle: document.getElementById('subtitle').value,
+      origin: document.getElementById('origin').value,
+      altitude: document.getElementById('altitude').value,
+      pickDate: document.getElementById('pickDate').value,
+      produceDate: document.getElementById('produceDate').value,
+      netWeight: document.getElementById('netWeight').value,
+      shelfLife: document.getElementById('shelfLife').value,
+      batchNo: document.getElementById('batchNo').value,
+      originDesc: document.getElementById('originDesc').value,
+      originTags: document.getElementById('originTags').value.split(',').map(t => t.trim()),
+      farmerName: document.getElementById('farmerName').value,
+      farmerExp: document.getElementById('farmerExp').value,
+      farmerArea: document.getElementById('farmerArea').value,
+      farmerMethod: document.getElementById('farmerMethod').value,
+      brandStory: document.getElementById('brandStory').value,
+      contact: {
+        phone: document.getElementById('contactPhone').value,
+        wechat: document.getElementById('contactWechat').value,
+        address: document.getElementById('contactAddress').value,
+        shop: document.getElementById('contactShop').value
+      }
+    };
+    
+    products[id] = product;
+    localStorage.setItem('trace_products', JSON.stringify(products));
+    
+    document.getElementById('successMsg').classList.add('show');
+    setTimeout(() => document.getElementById('successMsg').classList.remove('show'), 3000);
+    
+    loadProductList();
+  }
+  
+  function loadProductList() {
+    const list = document.getElementById('productList');
+    if (Object.keys(products).length === 0) {
+      list.innerHTML = '暂无产品';
+      return;
+    }
+    
+    list.innerHTML = Object.entries(products).map(([id, p]) => `
+      <div class="product-item">
+        <div>
+          <div class="product-item-name">${p.name || '未命名'}</div>
+          <div class="product-item-id">ID: ${id}</div>
+        </div>
+        <div>
+          <button class="btn btn-secondary" onclick="loadProduct('${id}')" style="padding:6px 12px;font-size:12px;">编辑</button>
+          <button class="btn btn-secondary" onclick="generateQRFor('${id}')" style="padding:6px 12px;font-size:12px;">二维码</button>
+        </div>
+      </div>
+    `).join('');
+  }
+  
+  function loadProduct(id) {
+    const p = products[id];
+    if (!p) return;
+    
+    document.getElementById('productId').value = id;
+    document.getElementById('brand').value = p.brand || '';
+    document.getElementById('name').value = p.name || '';
+    document.getElementById('subtitle').value = p.subtitle || '';
+    document.getElementById('origin').value = p.origin || '';
+    document.getElementById('altitude').value = p.altitude || '';
+    document.getElementById('pickDate').value = p.pickDate || '';
+    document.getElementById('produceDate').value = p.produceDate || '';
+    document.getElementById('netWeight').value = p.netWeight || '';
+    document.getElementById('shelfLife').value = p.shelfLife || '';
+    document.getElementById('batchNo').value = p.batchNo || '';
+    document.getElementById('originDesc').value = p.originDesc || '';
+    document.getElementById('originTags').value = (p.originTags || []).join(',');
+    document.getElementById('farmerName').value = p.farmerName || '';
+    document.getElementById('farmerExp').value = p.farmerExp || '';
+    document.getElementById('farmerArea').value = p.farmerArea || '';
+    document.getElementById('farmerMethod').value = p.farmerMethod || '';
+    document.getElementById('brandStory').value = p.brandStory || '';
+    document.getElementById('contactPhone').value = p.contact?.phone || '';
+    document.getElementById('contactWechat').value = p.contact?.wechat || '';
+    document.getElementById('contactAddress').value = p.contact?.address || '';
+    document.getElementById('contactShop').value = p.contact?.shop || '';
+    
+    window.scrollTo(0, 0);
+  }
+  
+  function previewProduct() {
+    const id = document.getElementById('productId').value.trim();
+    if (!id) { alert('请先输入产品ID'); return; }
+    saveProduct();
+    window.open('index.html?id=' + id, '_blank');
+  }
+  
+  function generateQR() {
+    const id = document.getElementById('productId').value.trim();
+    if (!id) { alert('请先输入产品ID'); return; }
+    generateQRFor(id);
+  }
+  
+  function generateQRFor(id) {
+    // 这里需要替换为实际的部署URL
+    const baseUrl = 'https://your-domain.com/trace/index.html';
+    const url = baseUrl + '?id=' + id;
+    
+    // 使用二维码生成API
+    const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + encodeURIComponent(url);
+    
+    const win = window.open('', '_blank');
+    win.document.write(`
+      <html>
+      <head><title>二维码 - ${id}</title></head>
+      <body style="text-align:center;padding:40px;">
+        <h2>产品溯源二维码</h2>
+        <p style="color:#666;margin:16px 0;">产品ID: ${id}</p>
+        <img src="${qrUrl}" style="width:300px;height:300px;">
+        <p style="margin-top:16px;color:#888;font-size:13px;">扫码访问: ${url}</p>
+        <p style="margin-top:8px;color:#888;font-size:13px;">右键图片可保存</p>
+      </body>
+      </html>
+    `);
+  }
+</script>
+</body>
+</html>
