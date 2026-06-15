@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>溯源管理 · 巧家山野</title>
+<title>溯源管理 · 星禾优选</title>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -367,9 +367,10 @@ a{color:#2d5a27;text-decoration:none}
 
   <div style="height:100px"></div>
 
-  <!-- 编辑底部保存 -->
-  <div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);max-width:750px;width:100%;background:#fff;padding:12px 16px;border-top:1px solid #eee;z-index:102;padding-bottom:calc(12px + env(safe-area-inset-bottom))">
-    <button class="btn btn-primary btn-block" onclick="saveEdit()" style="font-size:15px;padding:12px">💾 保存批次</button>
+  <!-- 编辑底部操作 -->
+  <div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);max-width:750px;width:100%;background:#fff;padding:10px 16px;border-top:1px solid #eee;z-index:102;display:flex;gap:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom))">
+    <button class="btn btn-outline" onclick="saveEdit()" style="flex:1;font-size:14px;padding:12px">💾 保存</button>
+    <button class="btn btn-publish" onclick="saveAndPublish()" style="flex:2;font-size:15px;padding:12px">🚀 保存并发布</button>
   </div>
 </div>
 
@@ -706,6 +707,21 @@ function saveEdit() {
   updateStats();
   closeEdit();
   showToast('✓ 批次已保存', 'success');
+}
+
+async function saveAndPublish() {
+  // 先保存
+  const batchNo = document.getElementById('f_batchNo').value.trim();
+  if (!batchNo) { showToast('请输入批次编号','error'); return; }
+  const name = document.getElementById('f_name').value.trim();
+  if (!name) { showToast('请输入产品名称','error'); return; }
+  
+  saveEdit(); // 保存并关闭面板
+  
+  // 延迟一下再发布，确保数据已保存
+  setTimeout(() => {
+    publishAll();
+  }, 300);
 }
 
 // ====== 图片上传 ======
