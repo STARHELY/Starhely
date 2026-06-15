@@ -156,13 +156,13 @@
     "coverImg": "cover_XHTD2026061601.jpg",
     "origin": "云南省昭通市",
     "altitude": "2500米",
-    "pickDate": "2026年6月16日",
-    "processingTime": "2026年6月16日",
-    "produceDate": "2026年6月16日",
+    "pickDate": "2026年6月18日",
+    "processingTime": "2026年6月18日",
+    "produceDate": "2026年6月18日",
     "netWeight": "2.5kg",
-    "shelfLife": "24个月",
+    "shelfLife": "18个月",
     "batchNo": "XHTD2026061601",
-    "originDesc": "云南省昭通市鲁甸县，地处海拔2500米，属于北纬27°高原山地气候，日照充足，昼夜温差大，土壤肥沃，水源纯净，造就了优良品质。",
+    "originDesc": "云南省昭通市鲁甸县，海拔2500米，属于北纬27°高原山地气候，日照充足，昼夜温差大，土壤肥沃，水源纯净，造就了优良品质。",
     "originTags": [
       "高山种植",
       "日照充足",
@@ -177,7 +177,9 @@
     "farmerMethod": "生态种植",
     "harvestPhotos": [
       "harvest_XHTD2026061601_1.jpg",
-      "harvest_XHTD2026061601_2.jpg"
+      "harvest_XHTD2026061601_2.jpg",
+      "harvest_XHTD2026061601_3.jpg",
+      "harvest_XHTD2026061601_4.jpg"
     ],
     "reports": [
       {
