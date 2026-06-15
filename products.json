@@ -28,7 +28,9 @@
     "farmerMethod": "生态种植",
     "harvestPhotos": [
       "harvest_XHHJ2026061601_1.jpg",
-      "harvest_XHHJ2026061601_2.jpg"
+      "harvest_XHHJ2026061601_2.jpg",
+      "harvest_XHHJ2026061601_3.jpg",
+      "harvest_XHHJ2026061601_4.jpg"
     ],
     "reports": [
       {
@@ -128,6 +130,52 @@
       "harvest_XHHT2026061601_1.jpg",
       "harvest_XHHT2026061601_2.jpg"
     ],
+    "reports": [
+      {
+        "title": "农残检测报告",
+        "img": "img_report.jpg",
+        "imgName": "img_report.jpg"
+      }
+    ],
+    "productImgs": [],
+    "videos": [],
+    "brandStory": "扎根昭通滇东北高原，星禾优选溯源管理系统，记录青花椒、昭通苹果、高山土豆、核桃、板栗全生长流通链路。一码溯源，产地、种植、检测、物流全程透明可查，以数字守护本土农产品质，让山野好物的来路清晰可见，让云南高原风味安心奔赴全国与世界。",
+    "contact": {
+      "phone": "15758099554",
+      "wechat": "STARHE_LIGHTYEAR",
+      "address": "云南省昭通市",
+      "shop": "星禾优选云南好物"
+    },
+    "scanCount": 0
+  },
+  "XHTD2026061601": {
+    "brand": "星禾优选",
+    "name": "云南昭通高原转转乌洋芋",
+    "subtitle": "",
+    "productType": "TD",
+    "coverImg": "img_cover.jpg",
+    "origin": "云南省昭通市",
+    "altitude": "2500米",
+    "pickDate": "2026年6月16日",
+    "processingTime": "2026年6月16日",
+    "produceDate": "2026年6月16日",
+    "netWeight": "2.5kg",
+    "shelfLife": "24个月",
+    "batchNo": "XHTD2026061601",
+    "originDesc": "云南省昭通市鲁甸县，地处海拔2500米，属于北纬27°高原山地气候，日照充足，昼夜温差大，土壤肥沃，水源纯净，造就了优良品质。",
+    "originTags": [
+      "高山种植",
+      "日照充足",
+      "土壤肥沃",
+      "水源纯净"
+    ],
+    "originPhoto": "img_origin_farm.jpg",
+    "farmerName": "李仁有",
+    "farmerPhoto": "img_farmer.jpg",
+    "farmerExp": "5年",
+    "farmerArea": "205亩",
+    "farmerMethod": "生态种植",
+    "harvestPhotos": [],
     "reports": [
       {
         "title": "农残检测报告",
