@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -281,11 +280,11 @@ a{color:#2d5a27;text-decoration:none}
     <div class="form-row">
       <div class="form-group">
         <label>采摘时间</label>
-        <input type="text" id="f_pickDate" placeholder="2024年5月15日">
+        <input type="date" id="f_pickDate">
       </div>
       <div class="form-group">
         <label>生产日期</label>
-        <input type="text" id="f_produceDate" placeholder="2024年5月20日">
+        <input type="date" id="f_produceDate">
       </div>
     </div>
     <div class="form-row">
@@ -412,13 +411,13 @@ a{color:#2d5a27;text-decoration:none}
     </div>
   </div>
 
-  <div style="height:100px"></div>
+  <div style="height:80px"></div>
+</div>
 
-  <!-- 编辑底部操作 -->
-  <div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);max-width:750px;width:100%;background:#fff;padding:10px 16px;border-top:1px solid #eee;z-index:102;display:flex;gap:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom))">
-    <button class="btn btn-outline" onclick="saveEdit()" style="flex:1;font-size:14px;padding:12px">💾 保存</button>
-    <button class="btn btn-publish" onclick="saveAndPublish()" style="flex:2;font-size:15px;padding:12px">🚀 保存并发布</button>
-  </div>
+<!-- 编辑底部操作（移到edit-panel外部，避免移动端fixed定位问题） -->
+<div id="editBottomBar" style="display:none;position:fixed;bottom:0;left:50%;transform:translateX(-50%);max-width:750px;width:100%;background:#fff;padding:10px 16px;border-top:1px solid #eee;z-index:200;gap:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom))">
+  <button class="btn btn-outline" onclick="saveEdit()" style="flex:1;font-size:14px;padding:12px">💾 保存</button>
+  <button class="btn btn-publish" onclick="saveAndPublish()" style="flex:2;font-size:15px;padding:12px">🚀 保存并发布</button>
 </div>
 
 <!-- 二维码弹窗 -->
@@ -684,6 +683,7 @@ function openEdit(id) {
   editingId = id || null;
   document.getElementById('editOverlay').classList.add('active');
   document.getElementById('editPanel').classList.add('active');
+  document.getElementById('editBottomBar').style.display = 'flex';
   
   if (id && products[id]) {
     document.getElementById('editTitle').textContent = '编辑：' + id;
@@ -712,6 +712,7 @@ function openEdit(id) {
 function closeEdit() {
   document.getElementById('editOverlay').classList.remove('active');
   document.getElementById('editPanel').classList.remove('active');
+  document.getElementById('editBottomBar').style.display = 'none';
   editingId = null;
 }
 
@@ -752,8 +753,8 @@ function fillEditForm(p, id) {
   document.getElementById('f_subtitle').value = p.subtitle || '';
   document.getElementById('f_origin').value = p.origin || '';
   document.getElementById('f_altitude').value = p.altitude || '';
-  document.getElementById('f_pickDate').value = p.pickDate || '';
-  document.getElementById('f_produceDate').value = p.produceDate || '';
+  document.getElementById('f_pickDate').value = parseDateForInput(p.pickDate || '');
+  document.getElementById('f_produceDate').value = parseDateForInput(p.produceDate || '');
   document.getElementById('f_netWeight').value = p.netWeight || '';
   document.getElementById('f_shelfLife').value = p.shelfLife || '';
   document.getElementById('f_farmerName').value = p.farmerName || '';
@@ -770,6 +771,7 @@ function fillEditForm(p, id) {
 }
 
 function saveEdit() {
+  try {
   const batchNo = document.getElementById('f_batchNo').value.trim();
   if (!batchNo) { showToast('请输入批次编号','error'); return; }
   const name = document.getElementById('f_name').value.trim();
@@ -785,7 +787,8 @@ function saveEdit() {
   // 收集采摘/加工现场图
   const hImgs = (harvestImages[editingId || batchNo] || []).filter(Boolean);
   
-  const pickDate = document.getElementById('f_pickDate').value;
+  const pickDate = formatDateCN(document.getElementById('f_pickDate').value);
+  const produceDate = formatDateCN(document.getElementById('f_produceDate').value);
   
   const product = {
     brand: "星禾优选",
@@ -797,7 +800,7 @@ function saveEdit() {
     altitude: document.getElementById('f_altitude').value,
     pickDate: pickDate,
     processingTime: pickDate, // 默认与采摘时间同步
-    produceDate: document.getElementById('f_produceDate').value,
+    produceDate: produceDate,
     netWeight: document.getElementById('f_netWeight').value,
     shelfLife: document.getElementById('f_shelfLife').value,
     batchNo: batchNo,
@@ -835,15 +838,24 @@ function saveEdit() {
   updateStats();
   closeEdit();
   showToast('✓ 批次已保存', 'success');
+  } catch(e) {
+    console.error('saveEdit error:', e);
+    showToast('保存出错：' + e.message, 'error');
+  }
 }
 
 async function saveAndPublish() {
-  const batchNo = document.getElementById('f_batchNo').value.trim();
-  if (!batchNo) { showToast('请输入批次编号','error'); return; }
-  const name = document.getElementById('f_name').value.trim();
-  if (!name) { showToast('请输入产品名称','error'); return; }
-  saveEdit();
-  setTimeout(() => { publishAll(); }, 300);
+  try {
+    const batchNo = document.getElementById('f_batchNo').value.trim();
+    if (!batchNo) { showToast('请输入批次编号','error'); return; }
+    const name = document.getElementById('f_name').value.trim();
+    if (!name) { showToast('请输入产品名称','error'); return; }
+    saveEdit();
+    setTimeout(() => { publishAll(); }, 500);
+  } catch(e) {
+    console.error('saveAndPublish error:', e);
+    showToast('操作出错：' + e.message, 'error');
+  }
 }
 
 // ====== 图片上传 ======
@@ -933,13 +945,34 @@ function removeHarvestImg(id, index) {
 function compressImage(dataUrl, maxW, quality, cb) {
   const img = new Image();
   img.onload = function() {
-    let w = img.width, h = img.height;
-    if (w > maxW) { h = h * maxW / w; w = maxW; }
-    const canvas = document.createElement('canvas');
-    canvas.width = w; canvas.height = h;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(img, 0, 0, w, h);
-    cb(canvas.toDataURL('image/jpeg', quality));
+    try {
+      let w = img.width, h = img.height;
+      if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+      // 移动端canvas尺寸限制，逐步缩小
+      const MAX_CANVAS = 2048;
+      while (w > MAX_CANVAS || h > MAX_CANVAS) {
+        w = Math.round(w * 0.75);
+        h = Math.round(h * 0.75);
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      const result = canvas.toDataURL('image/jpeg', quality);
+      if (!result || result.length < 100) {
+        // 压缩失败，返回原图
+        cb(dataUrl);
+      } else {
+        cb(result);
+      }
+    } catch(e) {
+      console.error('compressImage error:', e);
+      cb(dataUrl); // 失败时返回原图
+    }
+  };
+  img.onerror = function() {
+    console.error('Image load failed');
+    cb(dataUrl); // 加载失败时返回原图dataUrl
   };
   img.src = dataUrl;
 }
@@ -957,6 +990,23 @@ function setImgPreview(type, dataUrl) {
     const imgEl = el.querySelector('img');
     if (imgEl) imgEl.remove();
   }
+}
+
+// ====== 日期格式转换 ======
+function formatDateCN(val) {
+  // 将 date input 的值(2024-05-15)转为中文格式(2024年5月15日)
+  if (!val) return '';
+  const parts = val.split('-');
+  if (parts.length === 3) return parts[0] + '年' + parseInt(parts[1]) + '月' + parseInt(parts[2]) + '日';
+  return val; // 已经是中文格式或其他格式，保持原样
+}
+function parseDateForInput(val) {
+  // 将中文日期(2024年5月15日)转为 date input 格式(2024-05-15)
+  if (!val) return '';
+  const m = val.match(/(\d{4})年(\d{1,2})月(\d{1,2})日/);
+  if (m) return m[1] + '-' + m[2].padStart(2,'0') + '-' + m[3].padStart(2,'0');
+  if (/^\d{4}-\d{2}-\d{2}$/.test(val)) return val;
+  return '';
 }
 
 // ====== 复制功能 ======
