@@ -1,50 +1,34 @@
 {
-  "QJ2026071501": {
-    "brand": "云南巧家山野",
-    "name": "云南巧家干青花椒",
-    "subtitle": "源自北纬27°的高山馈赠",
-    "coverImg": "cover_QJ2026071501.jpg",
-    "origin": "云南省昭通市巧家县",
+  "XHHJ2026061601": {
+    "brand": "星禾优选",
+    "name": "云南昭通干青花椒",
+    "subtitle": "源自北纬27°的自然馈赠",
+    "productType": "HJ",
+    "coverImg": "cover_XHHJ2026061601.jpg",
+    "origin": "云南省昭通市",
     "altitude": "1200-1800米",
     "pickDate": "2026年7月15日",
+    "processingTime": "2026年7月15日",
     "produceDate": "2026年7月15日",
     "netWeight": "250g",
     "shelfLife": "24个月",
-    "batchNo": "QJ2026071501",
-    "originDesc": "云南省昭通市巧家县，地处金沙江畔，属于北纬27°高原山地气候，日照充足，昼夜温差大，土壤肥沃，水源纯净，非常适合青花椒生长，造就了果实饱满、麻香持久的优良品质。",
+    "batchNo": "XHHJ2026061601",
+    "originDesc": "云南省昭通市巧家县，地处金沙江畔，属于北纬27°高原山地气候，日照充足，昼夜温差大，土壤肥沃，水源纯净，造就了优良品质。",
     "originTags": [
       "高山种植",
       "日照充足",
       "土壤肥沃",
       "水源纯净"
     ],
-    "originPhoto": "origin_QJ2026071501.jpg",
+    "originPhoto": "origin_XHHJ2026061601.jpg",
     "farmerName": "李仁财",
-    "farmerPhoto": "farmer_QJ2026071501.jpg",
+    "farmerPhoto": "farmer_XHHJ2026061601.jpg",
     "farmerExp": "25年",
     "farmerArea": "8亩",
-    "farmerMethod": "生态种植，不使用化肥农药",
-    "processSteps": [
-      {
-        "icon": "🤲",
-        "title": "人工采摘",
-        "desc": "清晨逐穗手摘"
-      },
-      {
-        "icon": "☀️",
-        "title": "天然晾晒",
-        "desc": "太阳直晒烘干"
-      },
-      {
-        "icon": "🔍",
-        "title": "筛选去杂",
-        "desc": "多道人工筛选"
-      },
-      {
-        "icon": "📦",
-        "title": "密封包装",
-        "desc": "锁鲜罐装封存"
-      }
+    "farmerMethod": "生态种植",
+    "harvestPhotos": [
+      "harvest_XHHJ2026061601_1.jpg",
+      "harvest_XHHJ2026061601_2.jpg"
     ],
     "reports": [
       {
@@ -53,19 +37,63 @@
         "imgName": "img_report.jpg"
       }
     ],
-    "productImgs": [
-      {
-        "title": "干青花椒（成品）",
-        "img": "product_QJ2026071501.jpg"
-      }
-    ],
+    "productImgs": [],
     "videos": [],
-    "brandStory": "我们来自云南巧家，世代以种植花椒为生，坚守传统农耕，不忘初心。只为给您带来一份来自高山的自然味道。",
+    "brandStory": "扎根昭通滇东北高原，星禾优选溯源管理系统，记录青花椒、昭通苹果、高山土豆、核桃、板栗全生长流通链路。一码溯源，产地、种植、检测、物流全程透明可查，以数字守护本土农产品质，让山野好物的来路清晰可见，让云南高原风味安心奔赴全国与世界。",
     "contact": {
       "phone": "15758099554",
-      "wechat": "lideheng960",
-      "address": "云南省昭通市巧家县",
-      "shop": "巧家山野"
+      "wechat": "STARHE_LIGHTYEAR",
+      "address": "云南省昭通市",
+      "shop": "星禾优选云南好物"
+    },
+    "scanCount": 0
+  },
+  "XHHJ2026061602": {
+    "brand": "星禾优选",
+    "name": "云南昭通干青花椒",
+    "subtitle": "",
+    "productType": "HJ",
+    "coverImg": "cover_XHHJ2026061602.jpg",
+    "origin": "云南省昭通市",
+    "altitude": "1200-1800米",
+    "pickDate": "2026年6月16日",
+    "processingTime": "2026年6月16日",
+    "produceDate": "2026年6月16日",
+    "netWeight": "250g",
+    "shelfLife": "24个月",
+    "batchNo": "XHHJ2026061602",
+    "originDesc": "云南省昭通市巧家县，地处金沙江畔，属于北纬27°高原山地气候，日照充足，昼夜温差大，土壤肥沃，水源纯净，造就了优良品质。",
+    "originTags": [
+      "高山种植",
+      "日照充足",
+      "土壤肥沃",
+      "水源纯净"
+    ],
+    "originPhoto": "origin_XHHJ2026061602.jpg",
+    "farmerName": "李仁财",
+    "farmerPhoto": "farmer_XHHJ2026061602.jpg",
+    "farmerExp": "25年",
+    "farmerArea": "8亩",
+    "farmerMethod": "生态种植",
+    "harvestPhotos": [
+      "harvest_XHHJ2026061602_1.jpg",
+      "harvest_XHHJ2026061602_2.jpg"
+    ],
+    "reports": [
+      {
+        "title": "农残检测报告",
+        "img": "img_report.jpg",
+        "imgName": "img_report.jpg"
+      }
+    ],
+    "productImgs": [],
+    "videos": [],
+    "brandStory": "扎根昭通滇东北高原，星禾优选溯源管理系统，记录青花椒、昭通苹果、高山土豆、核桃、板栗全生长流通链路。一码溯源，产地、种植、检测、物流全程透明可查，以数字守护本土农产品质，让山野好物的来路清晰可见，让云南高原风味安心奔赴全国与世界。",
+    "contact": {
+      "phone": "15758099554",
+      "wechat": "STARHE_LIGHTYEAR",
+      "address": "云南省昭通市",
+      "shop": "星禾优选云南好物"
     },
     "scanCount": 0
   }
