@@ -562,11 +562,20 @@ function init() {
 function getConfig() { return config; }
 
 function saveData() {
-  localStorage.setItem('trace_products_v4', JSON.stringify(products));
-  localStorage.setItem('trace_images_v4', JSON.stringify(images));
-  localStorage.setItem('trace_harvest_v1', JSON.stringify(harvestImages));
-  if (bannerImage) localStorage.setItem('trace_banner_v1', bannerImage);
-  localStorage.setItem('trace_carousel_v1', JSON.stringify(carouselImages));
+  try {
+    localStorage.setItem('trace_products_v4', JSON.stringify(products));
+    localStorage.setItem('trace_images_v4', JSON.stringify(images));
+    if (bannerImage) localStorage.setItem('trace_banner_v1', bannerImage);
+    localStorage.setItem('trace_carousel_v1', JSON.stringify(carouselImages));
+  } catch(e) {
+    console.warn('localStorage save error:', e);
+  }
+  // 采摘图数据量大，单独 try-catch，避免影响其他数据保存
+  try {
+    localStorage.setItem('trace_harvest_v1', JSON.stringify(harvestImages));
+  } catch(e) {
+    console.warn('harvest images too large for localStorage, keeping in memory only');
+  }
 }
 
 // ====== 状态 ======
@@ -923,6 +932,8 @@ function saveEdit() {
   }
 }
 
+let autoCloseAfterPublish = false;
+
 async function saveAndPublish() {
   try {
     const batchNo = document.getElementById('f_batchNo').value.trim();
@@ -930,6 +941,7 @@ async function saveAndPublish() {
     const name = document.getElementById('f_name').value.trim();
     if (!name) { showToast('请输入产品名称','error'); return; }
     saveEdit();
+    autoCloseAfterPublish = true;
     setTimeout(() => { publishAll(); }, 500);
   } catch(e) {
     console.error('saveAndPublish error:', e);
@@ -980,9 +992,10 @@ function pickHarvestImg() {
           harvestImages[id].push(compressed);
           processed++;
           if (processed === files.length) {
-            saveData();
+            // 先渲染再保存，确保图片立即可见
             renderHarvestImages(id);
             updateStats();
+            saveData();
             showToast('✓ 已添加' + files.length + '张照片', 'success');
           }
         });
@@ -1265,6 +1278,11 @@ async function publishAll() {
       title.textContent = '发布成功！';
       log('<br> 网站将在1-2分钟内更新');
       log(`📱 ${SITE_BASE()}index.html`);
+      // 保存并发布成功后，自动关闭弹层返回首页
+      if (autoCloseAfterPublish) {
+        autoCloseAfterPublish = false;
+        setTimeout(() => { closePublish(); }, 2000);
+      }
     } else {
       icon.textContent = '⚠️';
       title.textContent = '部分上传失败';
