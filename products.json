@@ -153,7 +153,7 @@
     "name": "云南昭通高原转转乌洋芋",
     "subtitle": "",
     "productType": "TD",
-    "coverImg": "img_cover.jpg",
+    "coverImg": "cover_XHTD2026061601.jpg",
     "origin": "云南省昭通市",
     "altitude": "2500米",
     "pickDate": "2026年6月16日",
@@ -169,13 +169,16 @@
       "土壤肥沃",
       "水源纯净"
     ],
-    "originPhoto": "img_origin_farm.jpg",
+    "originPhoto": "origin_XHTD2026061601.jpg",
     "farmerName": "李仁有",
-    "farmerPhoto": "img_farmer.jpg",
+    "farmerPhoto": "farmer_XHTD2026061601.jpg",
     "farmerExp": "5年",
     "farmerArea": "205亩",
     "farmerMethod": "生态种植",
-    "harvestPhotos": [],
+    "harvestPhotos": [
+      "harvest_XHTD2026061601_1.jpg",
+      "harvest_XHTD2026061601_2.jpg"
+    ],
     "reports": [
       {
         "title": "农残检测报告",
