@@ -3,592 +3,1466 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>星禾优选·产品溯源</title>
+<title>溯源管理·星禾优选</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{max-width:750px;margin:0 auto;background:#f5f0e8;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;color:#333;-webkit-font-smoothing:antialiased}
-img{max-width:100%;display:block}
+body{max-width:750px;margin:0 auto;background:#f0f2f5;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#333;padding-bottom:env(safe-area-inset-bottom)}
+a{color:#2d5a27;text-decoration:none}
 
-/* 欢迎区域 */
-.welcome{position:relative;padding:36px 24px 28px;text-align:center;overflow:hidden}
-.welcome-bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:blur(3px);opacity:0.25;z-index:0}
-.welcome-inner{position:relative;z-index:1}
-.welcome h1{font-size:20px;font-weight:700;color:#1e5a1e;letter-spacing:2px;margin-bottom:8px;line-height:1.4}
-.welcome .subtitle{font-size:14px;font-weight:600;color:#2d7a2d;letter-spacing:3px;margin-bottom:14px}
-.welcome .auth-row{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
-.welcome .auth-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(45,90,39,0.1);color:#1e5a1e;padding:7px 14px;border-radius:20px;font-size:12px;font-weight:600;border:1px solid rgba(45,90,39,0.2)}
-.welcome .auth-badge .icon{font-size:14px}
+/* 顶栏 */
+.topbar{background:linear-gradient(135deg,#2d5a27,#1e3f1a);color:#fff;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50}
+.topbar h1{font-size:17px;letter-spacing:1px}
+.topbar .status{font-size:11px;display:flex;align-items:center;gap:5px}
+.status-dot{width:7px;height:7px;border-radius:50%;background:#f44336}
+.status-dot.ok{background:#4caf50}
 
-/* 轮播图 */
-.carousel{position:relative;width:100%;overflow:hidden;background:#e8e0d0}
-.carousel-track{display:flex;transition:transform 0.5s ease}
-.carousel-slide{min-width:100%;position:relative}
-.carousel-slide img{width:100%;height:200px;object-fit:cover}
-.carousel-dots{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:2}
-.carousel-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.5);border:none;cursor:pointer;padding:0}
-.carousel-dot.active{background:#fff}
-.carousel-btn{position:absolute;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;border:none;background:rgba(0,0,0,0.3);color:#fff;font-size:18px;cursor:pointer;z-index:2;display:flex;align-items:center;justify-content:center}
-.carousel-btn:active{background:rgba(0,0,0,0.6)}
-.carousel-prev{left:8px}
-.carousel-next{right:8px}
+/* 底部操作栏 */
+.bottombar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);max-width:750px;width:100%;background:#fff;border-top:1px solid #eee;padding:10px 16px;padding-bottom:calc(10px + env(safe-area-inset-bottom));display:flex;gap:10px;z-index:50}
+.bottombar .btn{flex:1;justify-content:center}
 
-/* 无轮播图时的封面图 */
-.gallery{position:relative;width:100%;overflow:hidden}
-.gallery img{width:100%;height:220px;object-fit:cover}
-.gallery-badge{position:absolute;bottom:12px;left:12px;background:rgba(0,0,0,0.5);color:#fff;padding:4px 12px;border-radius:20px;font-size:12px;backdrop-filter:blur(4px)}
+/* 通用 */
+.section{padding:16px}
+.card{background:#fff;border-radius:14px;box-shadow:0 1px 4px rgba(0,0,0,0.05);overflow:hidden;margin-bottom:14px}
+.card-hd{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f0f0f0}
+.card-hd h3{font-size:15px;font-weight:600;color:#2d5a27}
+.card-bd{padding:16px}
 
-.container{padding:16px;padding-bottom:40px}
+.btn{padding:10px 18px;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:all 0.15s;-webkit-tap-highlight-color:transparent}
+.btn:active{transform:scale(0.97)}
+.btn-primary{background:#2d5a27;color:#fff}
+.btn-primary:hover{background:#1e3f1a}
+.btn-publish{background:#ff6b00;color:#fff;font-size:15px}
+.btn-publish:hover{background:#e65c00}
+.btn-publish:disabled{background:#ccc;cursor:not-allowed}
+.btn-danger{background:#e63946;color:#fff}
+.btn-outline{background:#fff;color:#333;border:1px solid #ddd}
+.btn-outline:hover{border-color:#2d5a27;color:#2d5a27}
+.btn-sm{padding:6px 12px;font-size:12px;border-radius:8px}
+.btn-xs{padding:4px 8px;font-size:11px;border-radius:6px}
+.btn-block{width:100%}
 
-/* 标签条 */
-.tags-bar{display:flex;justify-content:center;gap:20px;padding:18px 16px;flex-wrap:wrap}
-.tag-item{display:flex;flex-direction:column;align-items:center;gap:5px}
-.tag-circle{width:48px;height:48px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.08);font-size:22px}
-.tag-label{font-size:11px;color:#666;font-weight:500}
+/* 表单 */
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:12px;color:#888;margin-bottom:5px;font-weight:500}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:10px 12px;border:1px solid #e0e0e0;border-radius:10px;font-size:14px;font-family:inherit;outline:none;background:#fff;-webkit-appearance:none}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:#2d5a27}
+.form-group textarea{resize:vertical;min-height:60px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form-row .form-group{margin-bottom:0}
+@media(max-width:400px){.form-row{grid-template-columns:1fr}}
 
-/* 卡片 */
-.card{background:#fff;border-radius:16px;margin-bottom:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.04)}
-.card-header{padding:16px 20px 12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #f0f0f0}
-.card-icon{width:28px;height:28px;background:#e8f5e9;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px}
-.card-title{font-size:16px;font-weight:600;color:#2d5a27}
-.card-body{padding:20px}
+/* 复制按钮 */
+.input-copy{position:relative;display:flex;gap:6px}
+.input-copy input{flex:1}
+.input-copy .btn-copy{flex-shrink:0;padding:10px 14px;background:#f0f8f0;color:#2d5a27;border:1px solid #2d5a27;border-radius:10px;font-size:12px;cursor:pointer;white-space:nowrap}
+.input-copy .btn-copy:active{background:#2d5a27;color:#fff}
 
-/* 产品表格 */
-.info-table{width:100%}
-.info-table tr{border-bottom:1px solid #f5f5f5}
-.info-table tr:last-child{border-bottom:none}
-.info-table td{padding:12px 0;font-size:14px;vertical-align:top}
-.info-table td:first-child{color:#999;width:72px;white-space:nowrap}
-.info-table td:last-child{color:#333;font-weight:500}
+/* 图片上传 */
+.img-upload{position:relative;width:100%;aspect-ratio:16/10;border:2px dashed #ddd;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;background:#fafafa;-webkit-tap-highlight-color:transparent}
+.img-upload:active{border-color:#2d5a27;background:#f0f8f0}
+.img-upload.has-img{border-style:solid;border-color:#e0e0e0}
+.img-upload img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.img-upload .upload-hint{position:relative;z-index:1;text-align:center;pointer-events:none}
+.img-upload .upload-hint .icon{font-size:28px;opacity:0.4}
+.img-upload .upload-hint .text{font-size:12px;color:#999;margin-top:4px}
+.img-upload.has-img .upload-hint{background:rgba(0,0,0,0.4);width:100%;height:100%;color:#fff;opacity:0;transition:opacity 0.2s}
+.img-upload.has-img:active .upload-hint{opacity:1}
+.img-upload-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.img-upload-small{position:relative;width:100%;aspect-ratio:1;border:2px dashed #ddd;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;background:#fafafa}
+.img-upload-small:active{border-color:#2d5a27}
+.img-upload-small.has-img{border-style:solid;border-color:#e0e0e0}
+.img-upload-small img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.img-upload-small .upload-hint{position:relative;z-index:1;text-align:center;pointer-events:none}
+.img-upload-small .upload-hint .icon{font-size:22px;opacity:0.4}
+.img-upload-small .upload-hint .text{font-size:11px;color:#999;margin-top:2px}
+.img-upload-small.has-img .upload-hint{background:rgba(0,0,0,0.4);width:100%;height:100%;color:#fff;opacity:0;transition:opacity 0.2s}
+.img-upload-small.has-img:active .upload-hint{opacity:1}
+.img-label{font-size:12px;color:#888;margin-bottom:4px}
 
-/* 产地 */
-.origin-desc{font-size:14px;line-height:1.9;color:#555;margin-bottom:16px}
-.origin-tags{display:flex;gap:8px;flex-wrap:wrap}
-.origin-tag{background:#e8f5e9;color:#2d5a27;padding:6px 14px;border-radius:20px;font-size:12px}
-.origin-photo-wrap{position:relative;width:100%;padding-bottom:56.25%;border-radius:12px;overflow:hidden;margin-bottom:16px;cursor:pointer;background:#e8e0d0}
-.origin-photo-wrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+/* 多图上传 */
+.multi-img-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.multi-img-item{position:relative;width:100%;padding-bottom:100%;border:2px dashed #ddd;border-radius:10px;overflow:hidden;background:#fafafa;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.multi-img-item:active{border-color:#2d5a27}
+.multi-img-item.has-img{border-style:solid;border-color:#e0e0e0}
+.multi-img-item img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:1}
+.multi-img-item .upload-hint{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:2;pointer-events:none}
+.multi-img-item .upload-hint .icon{font-size:22px;opacity:0.4}
+.multi-img-item .upload-hint .text{font-size:10px;color:#999;margin-top:2px}
+.multi-img-item .del-btn{position:absolute;top:2px;right:2px;width:22px;height:22px;background:rgba(0,0,0,0.6);color:#fff;border:none;border-radius:50%;font-size:12px;cursor:pointer;z-index:3;display:none;align-items:center;justify-content:center}
+.multi-img-item:hover .del-btn,.multi-img-item:active .del-btn{display:flex}
+.multi-img-item .del-btn:active{background:#e63946}
 
-/* 农户 */
-.farmer-card{display:flex;gap:16px;align-items:flex-start}
-.farmer-avatar{width:80px;height:80px;border-radius:12px;object-fit:cover;flex-shrink:0}
-.farmer-avatar-placeholder{width:80px;height:80px;background:#e8e0d0;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:36px}
-.farmer-name{font-size:16px;font-weight:600;color:#333;margin-bottom:8px}
-.farmer-meta{font-size:13px;color:#666;line-height:1.8}
+/* 产品列表 */
+.product-list-item{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid #f5f5f5;gap:12px}
+.product-list-item:last-child{border-bottom:none}
+.pli-thumb{width:44px;height:44px;border-radius:10px;background:#e8e0d0;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:20px}
+.pli-thumb img{width:100%;height:100%;object-fit:cover}
+.pli-info{flex:1;min-width:0}
+.pli-name{font-size:14px;font-weight:600;color:#333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pli-meta{font-size:12px;color:#888;margin-top:2px}
+.pli-id{font-family:monospace;font-size:11px;color:#2d5a27;background:#e8f5e9;padding:1px 6px;border-radius:4px}
+.pli-actions{display:flex;gap:4px;flex-shrink:0}
 
-/* 采摘/加工现场图 */
-.harvest-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.harvest-item{border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);cursor:pointer;position:relative}
-.harvest-item img{width:100%;height:140px;object-fit:cover}
-.harvest-label{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.5);color:#fff;padding:6px;font-size:11px;text-align:center;backdrop-filter:blur(4px)}
+/* 编辑面板 */
+.edit-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:100}
+.edit-overlay.active{display:block}
+.edit-panel{position:fixed;top:0;right:-100%;width:100%;max-width:750px;height:100%;background:#f0f2f5;z-index:101;transition:right 0.3s;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:100px}
+.edit-panel.active{right:0}
+.edit-hd{background:#fff;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10;border-bottom:1px solid #eee}
+.edit-hd h2{font-size:16px;color:#2d5a27}
+.edit-close{width:32px;height:32px;border-radius:50%;border:none;background:#f0f0f0;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.edit-section{padding:14px 16px}
+.edit-section-title{font-size:13px;font-weight:600;color:#2d5a27;margin-bottom:10px}
 
-/* 时间轴 */
-.timeline-row{display:flex;align-items:center;gap:12px;padding:14px 16px;background:#f8f8f8;border-radius:12px}
-.timeline-dot{width:10px;height:10px;background:#2d5a27;border-radius:50%;flex-shrink:0}
-.timeline-content{flex:1}
-.timeline-title{font-size:14px;font-weight:600;color:#333}
-.timeline-sub{font-size:12px;color:#888;margin-top:2px}
+/* 二维码弹窗 */
+.qr-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;align-items:center;justify-content:center}
+.qr-overlay.active{display:flex}
+.qr-card{background:#fff;border-radius:16px;padding:28px 24px;text-align:center;max-width:340px;width:90%}
+.qr-card h3{font-size:16px;margin-bottom:4px}
+.qr-card .qr-id{font-size:12px;color:#888;font-family:monospace;margin-bottom:14px}
+.qr-card .qr-box{margin:0 auto 14px;width:200px;height:200px}
+.qr-card .qr-url{font-size:11px;color:#666;word-break:break-all;background:#f8f8f8;padding:8px;border-radius:8px;margin-bottom:14px}
+.qr-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
 
-/* 检测报告 */
-.report-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.report-item{border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);cursor:pointer;position:relative}
-.report-item img{width:100%;height:180px;object-fit:cover}
-.report-label{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.6);color:#fff;padding:8px;font-size:12px;text-align:center;backdrop-filter:blur(4px)}
+/* 设置弹窗 */
+.setting-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:center;justify-content:center}
+.setting-overlay.active{display:flex}
+.setting-card{background:#fff;border-radius:16px;padding:24px;max-width:420px;width:90%;max-height:90vh;overflow-y:auto}
+.setting-card h3{font-size:16px;margin-bottom:4px;color:#2d5a27}
+.setting-card .desc{font-size:12px;color:#888;margin-bottom:16px;line-height:1.6}
+.setting-card .desc a{color:#2d5a27;font-weight:600}
 
-/* 产品展示 */
-.product-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.product-item{border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);cursor:pointer}
-.product-item img{width:100%;height:160px;object-fit:cover}
-.product-item .p-label{padding:8px 12px;font-size:12px;color:#666;text-align:center;background:#f8f8f8}
+/* 发布进度 */
+.publish-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:300;align-items:center;justify-content:center}
+.publish-overlay.active{display:flex}
+.publish-card{background:#fff;border-radius:16px;padding:32px 24px;text-align:center;max-width:340px;width:90%}
+.publish-card .publish-icon{font-size:48px;margin-bottom:12px}
+.publish-card h3{font-size:16px;margin-bottom:8px}
+.publish-card .progress-bar{width:100%;height:6px;background:#e0e0e0;border-radius:3px;margin:16px 0;overflow:hidden}
+.publish-card .progress-fill{height:100%;background:#2d5a27;border-radius:3px;transition:width 0.3s;width:0}
+.publish-card .progress-text{font-size:12px;color:#888;max-height:120px;overflow-y:auto;text-align:left;line-height:1.6}
 
-/* 联系我们 */
-.contact-row{display:flex;align-items:center;gap:8px;padding:12px 0;border-bottom:1px solid #f5f5f5}
-.contact-row:last-child{border-bottom:none}
-.contact-label{color:#999;font-size:14px;width:50px;flex-shrink:0}
-.contact-value{flex:1;color:#333;font-size:14px;font-weight:500}
-.contact-copy{padding:5px 12px;background:#f0f8f0;color:#2d5a27;border:1px solid #2d5a27;border-radius:8px;font-size:12px;cursor:pointer;flex-shrink:0}
-.contact-copy:active{background:#2d5a27;color:#fff}
+/* Toast */
+.toast{position:fixed;top:60px;left:50%;transform:translateX(-50%) translateY(-100px);background:#333;color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;z-index:999;transition:transform 0.3s;box-shadow:0 4px 12px rgba(0,0,0,0.2);white-space:nowrap;max-width:90%}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{background:#2d5a27}
+.toast.error{background:#e63946}
 
-/* 底部 */
-.footer{background:#2d5a27;padding:32px 24px;text-align:center;margin-top:8px;position:relative}
-.footer::before{content:'';position:absolute;top:0;left:0;right:0;height:24px;background:#f5f0e8;border-radius:0 0 24px 24px}
-.footer-line1{color:rgba(255,255,255,0.85);font-size:14px;line-height:1.8;padding-top:16px;letter-spacing:1px}
-.footer-line2{color:rgba(255,255,255,0.7);font-size:13px;line-height:1.8;margin-top:4px}
-.footer-line3{color:rgba(255,255,255,0.5);font-size:12px;line-height:1.8;margin-top:8px}
+/* 空状态 */
+.empty{text-align:center;padding:48px 20px;color:#999}
+.empty .icon{font-size:40px;margin-bottom:12px;opacity:0.4}
+.empty p{font-size:14px}
 
-/* 图片查看器 */
-.viewer{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:999;align-items:center;justify-content:center;cursor:pointer}
-.viewer.active{display:flex}
-.viewer img{max-width:95%;max-height:90vh;object-fit:contain}
-.viewer .close-btn{position:absolute;top:20px;right:20px;color:#fff;font-size:32px;cursor:pointer;width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.1);border-radius:50%)}
+/* 报告/产品图行 */
+.img-row{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.img-row input{flex:1;padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:13px;outline:none}
+.img-row input:focus{border-color:#2d5a27}
+.img-row .btn-xs{flex-shrink:0}
 
-/* 加载 */
-.loading{text-align:center;padding:80px 20px;color:#888}
-.loading .spinner{width:32px;height:32px;border:3px solid #e0e0e0;border-top-color:#2d5a27;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px}
-@keyframes spin{to{transform:rotate(360deg)}}
+/* 引导首次设置 */
+.guide-banner{background:linear-gradient(135deg,#ff6b00,#ff8f00);color:#fff;padding:16px 20px;margin:16px;border-radius:14px;display:flex;align-items:center;gap:14px}
+.guide-banner .gb-icon{font-size:32px;flex-shrink:0}
+.guide-banner .gb-text{flex:1;font-size:13px;line-height:1.6}
+.guide-banner .gb-text b{display:block;font-size:15px;margin-bottom:2px}
 
-.scan-info{text-align:center;padding:8px;font-size:12px;color:#999}
-.scan-info .scan-num{font-weight:700;color:#2d5a27}
+/* 店铺装修预览 */
+.banner-preview{width:100%;aspect-ratio:16/9;border-radius:12px;overflow:hidden;border:2px solid #e0e0e0;margin-top:8px;background:#f0f0f0}
+.banner-preview img{width:100%;height:100%;object-fit:cover}
 </style>
 </head>
 <body>
 
-<div id="app">
-  <div class="loading">
-    <div class="spinner"></div>
-    <div>加载中...</div>
+<!-- 顶栏 -->
+<div class="topbar">
+  <div>
+    <h1>🌿 星禾优选溯源管理系统</h1>
+  </div>
+  <div class="status">
+    <div class="status-dot" id="statusDot"></div>
+    <span id="statusText">未连接</span>
   </div>
 </div>
 
-<div class="viewer" id="viewer" onclick="closeViewer()">
-  <div class="close-btn">×</div>
-  <img id="viewerImg" src="" alt="">
+<!-- 主内容 -->
+<div id="mainContent">
+  <!-- 首次引导 -->
+  <div id="guideBanner" class="guide-banner" style="display:none" onclick="openSetting()">
+    <div class="gb-icon">⚙️</div>
+    <div class="gb-text">
+      <b>首次使用，请先配置</b>
+      点击此处设置GitHub连接，之后所有操作都在这里完成
+    </div>
+  </div>
+
+  <!-- 统计 -->
+  <div class="section" style="padding-bottom:0">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+      <div class="card" style="text-align:center;padding:14px 8px">
+        <div style="font-size:24px;font-weight:700;color:#2d5a27" id="statTotal">0</div>
+        <div style="font-size:11px;color:#888">批次</div>
+      </div>
+      <div class="card" style="text-align:center;padding:14px 8px">
+        <div style="font-size:24px;font-weight:700;color:#2d5a27" id="statFarmers">0</div>
+        <div style="font-size:11px;color:#888">农户</div>
+      </div>
+      <div class="card" style="text-align:center;padding:14px 8px">
+        <div style="font-size:24px;font-weight:700;color:#2d5a27" id="statImgs">0</div>
+        <div style="font-size:11px;color:#888">图片</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 轮播图管理 -->
+  <div class="section" style="padding-bottom:0">
+    <div class="card">
+      <div class="card-hd">
+        <h3>🎞️ 首页轮播图</h3>
+        <button class="btn btn-sm btn-outline" onclick="pickCarouselImg()" id="addCarouselBtn">+ 添加</button>
+      </div>
+      <div style="padding:12px 16px">
+        <p style="font-size:12px;color:#888;margin-bottom:10px">产品海报轮播展示，最多4张，建议宽幅比例（如 750×300）</p>
+        <div id="carouselGrid" class="multi-img-grid">
+          <div class="multi-img-item" onclick="pickCarouselImg()">
+            <div class="upload-hint"><div class="icon">➕</div><div class="text">添加海报</div></div>
+          </div>
+        </div>
+        <input type="file" id="carouselFileInput" accept="image/*" style="display:none">
+      </div>
+    </div>
+  </div>
+
+  <!-- 批次列表 -->
+  <div class="section">
+    <div class="card">
+      <div class="card-hd">
+        <h3>产品批次</h3>
+        <button class="btn btn-sm btn-primary" onclick="openEdit()">+ 新增</button>
+      </div>
+      <div id="productList">
+        <div class="empty"><div class="icon"></div><p>暂无批次，点击上方新增</p></div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<script>
-const PRODUCT_ID = new URLSearchParams(window.location.search).get('id') || '';
-const MOUNTAIN_BG_URL = 'mountain_bg.jpg';
+<!-- 底部操作栏 -->
+<div class="bottombar">
+  <button class="btn btn-outline" onclick="openSetting()">⚙️ 设置</button>
+  <button class="btn btn-outline" onclick="syncFromGitHub()" id="syncBtn">🔄 同步</button>
+  <button class="btn btn-publish" id="publishBtn" onclick="publishAll()">🚀 发布到网站</button>
+</div>
 
-async function loadJSON(url) {
-  try {
-    const resp = await fetch(url + '?t=' + Date.now());
-    if (!resp.ok) throw new Error('HTTP ' + resp.status);
-    return await resp.json();
-  } catch(e) {
-    console.warn('无法加载 ' + url, e);
-    return null;
-  }
-}
+<!-- 编辑面板 -->
+<div class="edit-overlay" id="editOverlay" onclick="closeEdit()"></div>
+<div class="edit-panel" id="editPanel">
+  <div class="edit-hd">
+    <h2 id="editTitle">新增批次</h2>
+    <button class="edit-close" onclick="closeEdit()">×</button>
+  </div>
 
-const FALLBACK_PRODUCTS = {
-  "XHHJ2026071501": {
-    brand: "星禾优选", name: "云南巧家干青花椒",
-    subtitle: "源自北纬27°的高山馈赠", productType: "HJ",
-    coverImg: "img_cover.jpg",
-    origin: "云南省昭通市巧家县", altitude: "1200-1800米",
-    pickDate: "2026年7月15日", processingTime: "2026年7月15日", produceDate: "2026年7月20日",
-    netWeight: "250g", shelfLife: "18个月", batchNo: "XHHJ2026071501",
-    originDesc: "云南省昭通市巧家县，地处金沙江畔，属于北纬27°高原山地气候，日照充足，昼夜温差大，土壤肥沃，水源纯净，造就了优良品质。",
-    originTags: ["高山种植", "日照充足", "土壤肥沃", "水源纯净"],
-    originPhoto: "img_origin_farm.jpg",
-    farmerName: "李大哥", farmerPhoto: "img_farmer.jpg",
-    farmerExp: "20年", farmerArea: "50亩", farmerMethod: "生态种植，不使用化肥农药",
-    harvestPhotos: [],
-    reports: [{title:"农残检测报告",img:"img_report.jpg"}],
-    productImgs: [{title:"干青花椒（成品）",img:"img_product.jpg"}],
-    videos: [],
-    brandStory: "扎根昭通滇东北高原，星禾优选溯源管理系统，记录青花椒、昭通苹果、高山土豆、核桃、板栗全生长流通链路。一码溯源，产地、种植、检测、物流全程透明可查，以数字守护本土农产品质，让山野好物的来路清晰可见，让云南高原风味安心奔赴全国与世界。",
-    contact: {phone:"15758099554",wechat:"STARHE_LIGHTYEAR",address:"云南省昭通市",shop:"星禾优选云南好物"},
-    scanCount: 0
-  }
-};
+  <div class="edit-section">
+    <div class="edit-section-title">📋 基本信息</div>
+    <div class="form-group">
+      <label>产品类型 *</label>
+      <select id="f_productType" onchange="updateBatchNo()">
+        <option value="HJ">花椒（HJ）</option>
+        <option value="TD">土豆（TD）</option>
+        <option value="HT">核桃（HT）</option>
+        <option value="PG">苹果（PG）</option>
+        <option value="BL">板栗（BL）</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>批次编号 * <span style="color:#2d5a27;font-weight:600">格式：XH + 类型 + 日期 + 序号</span></label>
+      <input type="text" id="f_batchNo" placeholder="自动生成，如 XHHJ2026071501">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>产品名称 *</label>
+        <input type="text" id="f_name" placeholder="如：云南巧家干青花椒">
+      </div>
+      <div class="form-group">
+        <label>副标题</label>
+        <input type="text" id="f_subtitle" placeholder="如：源自北纬27°的高山馈赠">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>产地</label>
+        <input type="text" id="f_origin" value="云南省昭通市">
+      </div>
+      <div class="form-group">
+        <label>海拔</label>
+        <input type="text" id="f_altitude" value="1200-1800米">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>采摘时间</label>
+        <input type="date" id="f_pickDate">
+      </div>
+      <div class="form-group">
+        <label>生产日期</label>
+        <input type="date" id="f_produceDate">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>净含量</label>
+        <input type="text" id="f_netWeight" value="250g">
+      </div>
+      <div class="form-group">
+        <label>保质期</label>
+        <input type="text" id="f_shelfLife" value="18个月">
+      </div>
+    </div>
+  </div>
 
-function openViewer(src) {
-  document.getElementById('viewerImg').src = src;
-  document.getElementById('viewer').classList.add('active');
-}
-function closeViewer() {
-  document.getElementById('viewer').classList.remove('active');
-}
-
-function copyText(text) {
-  navigator.clipboard.writeText(text).then(()=>showToast('已复制')).catch(()=>{
-    const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);showToast('已复制');
-  });
-}
-
-function showToast(msg) {
-  const t = document.createElement('div');
-  t.style.cssText = 'position:fixed;top:60px;left:50%;transform:translateX(-50%);background:#2d5a27;color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.2)';
-  t.textContent = msg;
-  document.body.appendChild(t);
-  setTimeout(()=>{ t.style.opacity='0'; t.style.transition='opacity 0.3s'; }, 1500);
-  setTimeout(()=>t.remove(), 1800);
-}
-
-/* 轮播图逻辑 */
-let carouselImgs = [];
-let carouselIndex = 0;
-let carouselTimer = null;
-
-function startCarousel() {
-  stopCarousel();
-  if (carouselImgs.length > 1) {
-    carouselTimer = setInterval(nextSlide, 4000);
-  }
-}
-function stopCarousel() {
-  if (carouselTimer) { clearInterval(carouselTimer); carouselTimer = null; }
-}
-function goSlide(i) {
-  carouselIndex = i;
-  const track = document.getElementById('carouselTrack');
-  if (track) track.style.transform = 'translateX(-' + (i * 100) + '%)';
-  document.querySelectorAll('.carousel-dot').forEach((d,idx) => {
-    d.classList.toggle('active', idx === i);
-  });
-}
-function nextSlide() {
-  if (carouselImgs.length === 0) return;
-  carouselIndex = (carouselIndex + 1) % carouselImgs.length;
-  goSlide(carouselIndex);
-}
-function prevSlide() {
-  if (carouselImgs.length === 0) return;
-  carouselIndex = (carouselIndex - 1 + carouselImgs.length) % carouselImgs.length;
-  goSlide(carouselIndex);
-}
-
-function render(p, carousel) {
-  if (!p) {
-    document.getElementById('app').innerHTML = '<div style="text-align:center;padding:80px 20px;color:#e63946">未找到该产品溯源信息<br><span style="font-size:13px;color:#888">产品ID: ' + PRODUCT_ID + '</span></div>';
-    return;
-  }
-
-  // 1. 欢迎区域
-  let welcomeHTML = `
-    <div class="welcome">
-      <div class="welcome-bg" style="background-image:url('${MOUNTAIN_BG_URL}')"></div>
-      <div class="welcome-inner">
-        <h1>欢迎进入星禾优选产品溯源系统</h1>
-        <div class="subtitle">寻味云贵山野·严选正宗农产</div>
-        <div class="auth-row">
-          <span class="auth-badge"><span class="icon">✓</span> 官方认证溯源</span>
-          <span class="auth-badge"><span class="icon">📦</span> 无仓库囤货·全部产地直发</span>
+  <div class="edit-section">
+    <div class="edit-section-title">📸 产品图片</div>
+    <div class="img-label">封面大图</div>
+    <div class="img-upload" id="imgCover" onclick="pickImage('cover')">
+      <div class="upload-hint"><div class="icon">📷</div><div class="text">点击上传封面图（支持拍照/图库）</div></div>
+    </div>
+    <div style="height:10px"></div>
+    <div class="img-upload-row">
+      <div>
+        <div class="img-label">产地实拍</div>
+        <div class="img-upload-small" id="imgOrigin" onclick="pickImage('origin')">
+          <div class="upload-hint"><div class="icon">🏔️</div><div class="text">产地照片</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="img-label">农户照片</div>
+        <div class="img-upload-small" id="imgFarmer" onclick="pickImage('farmer')">
+          <div class="upload-hint"><div class="icon">👨‍</div><div class="text">农户照片</div></div>
         </div>
       </div>
     </div>
-  `;
+  </div>
 
-  // 2. 轮播图区域
-  carouselImgs = (carousel && carousel.length > 0) ? carousel : [];
-  let carouselHTML = '';
-  if (carouselImgs.length > 0) {
-    carouselHTML = `
-      <div class="carousel" ontouchstart="stopCarousel()" ontouchend="startCarousel()">
-        <div class="carousel-track" id="carouselTrack">
-          ${carouselImgs.map(img => `
-            <div class="carousel-slide" onclick="openViewer('${img}')">
-              <img src="${img}" alt="产品展示">
-            </div>
-          `).join('')}
-        </div>
-        ${carouselImgs.length > 1 ? `
-          <button class="carousel-btn carousel-prev" onclick="event.stopPropagation();prevSlide()">‹</button>
-          <button class="carousel-btn carousel-next" onclick="event.stopPropagation();nextSlide()">›</button>
-          <div class="carousel-dots">
-            ${carouselImgs.map((_, i) => `<button class="carousel-dot${i===0?' active':''}" onclick="event.stopPropagation();goSlide(${i})"></button>`).join('')}
-          </div>
-        ` : ''}
+  <div class="edit-section">
+    <div class="edit-section-title"> 采摘/加工现场图</div>
+    <div class="img-label">上传采摘或加工现场照片（可多张）</div>
+    <div class="multi-img-grid" id="harvestImgGrid">
+      <div class="multi-img-item" onclick="pickHarvestImg()">
+        <div class="upload-hint"><div class="icon">➕</div><div class="text">添加照片</div></div>
       </div>
-    `;
-  } else {
-    // 无轮播图时使用产品封面
-    carouselHTML = `
-      <div class="gallery">
-        <img src="${p.coverImg}" alt="${p.name}">
-        <div class="gallery-badge">📍 ${p.origin}</div>
-      </div>
-    `;
-  }
-
-  // 采摘/加工现场图
-  let harvestBodyHTML = '';
-  if (p.harvestPhotos && p.harvestPhotos.length > 0) {
-    harvestBodyHTML = `
-      <div class="harvest-grid">
-        ${p.harvestPhotos.map((img, i) => `
-          <div class="harvest-item" onclick="openViewer('${img}')">
-            <img src="${img}" alt="现场照片${i+1}">
-            <div class="harvest-label">现场照片 ${i+1}</div>
-          </div>
-        `).join('')}
-      </div>
-    `;
-  } else {
-    harvestBodyHTML = '<p style="color:#999;font-size:14px;text-align:center;padding:20px 0">暂无现场照片</p>';
-  }
-
-  // 产品图
-  let productImgsHTML = '';
-  if (p.productImgs && p.productImgs.length > 0) {
-    productImgsHTML = `
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon">📸</div>
-          <div class="card-title">产品展示</div>
-        </div>
-        <div class="card-body">
-          <div class="product-grid">
-            ${p.productImgs.map(item => `
-              <div class="product-item" onclick="openViewer('${item.img}')">
-                <img src="${item.img}" alt="${item.title}">
-                <div class="p-label">${item.title}</div>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  const phone = p.contact?.phone || '';
-  const wechat = p.contact?.wechat || '';
-  const address = p.contact?.address || '';
-  const shop = p.contact?.shop || '';
-
-  document.getElementById('app').innerHTML = `
-    ${welcomeHTML}
-    ${carouselHTML}
-    <div class="container">
-      <div class="tags-bar">
-        <div class="tag-item"><div class="tag-circle">📍</div><div class="tag-label">原产地</div></div>
-        <div class="tag-item"><div class="tag-circle">🌱</div><div class="tag-label">原生态</div></div>
-        <div class="tag-item"><div class="tag-circle">✅</div><div class="tag-label">严品质</div></div>
-        <div class="tag-item"><div class="tag-circle">🔍</div><div class="tag-label">放心溯源</div></div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon">📋</div>
-          <div class="card-title">产品信息</div>
-        </div>
-        <div class="card-body">
-          <table class="info-table">
-            <tr><td>品名</td><td>${p.name}</td></tr>
-            <tr><td>产地</td><td>${p.origin}</td></tr>
-            <tr><td>海拔</td><td>${p.altitude}</td></tr>
-            <tr><td>采摘时间</td><td>${p.pickDate}</td></tr>
-            <tr><td>生产日期</td><td>${p.produceDate}</td></tr>
-            <tr><td>净含量</td><td>${p.netWeight}</td></tr>
-            <tr><td>保质期</td><td>${p.shelfLife}</td></tr>
-            <tr><td>批次编号</td><td>${p.batchNo}</td></tr>
-          </table>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon">🏔️</div>
-          <div class="card-title">产地溯源</div>
-        </div>
-        <div class="card-body">
-          ${p.originPhoto ? `<div class="origin-photo-wrap" onclick="openViewer('${p.originPhoto}')"><img src="${p.originPhoto}" alt="产地实拍"></div>` : ''}
-          <div class="origin-desc">${p.originDesc}</div>
-          <div class="origin-tags">
-            ${(p.originTags||[]).map(t => `<span class="origin-tag">${t}</span>`).join('')}
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon">👨‍🌾</div>
-          <div class="card-title">种植基地 / 农户信息</div>
-        </div>
-        <div class="card-body">
-          <div class="farmer-card">
-            ${p.farmerPhoto ? `<img class="farmer-avatar" src="${p.farmerPhoto}" alt="${p.farmerName}">` : `<div class="farmer-avatar-placeholder">🌾</div>`}
-            <div>
-              <div class="farmer-name">基地负责人：${p.farmerName}</div>
-              <div class="farmer-meta">
-                种植经验：${p.farmerExp}<br>
-                种植面积：${p.farmerArea}<br>
-                种植方式：${p.farmerMethod}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon">🌿</div>
-          <div class="card-title">采摘/加工信息</div>
-        </div>
-        <div class="card-body">
-          ${harvestBodyHTML}
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon">⏰</div>
-          <div class="card-title">采摘/加工时间</div>
-        </div>
-        <div class="card-body">
-          <div class="timeline-row">
-            <div class="timeline-dot"></div>
-            <div class="timeline-content">
-              <div class="timeline-title">${p.processingTime || p.pickDate}</div>
-              <div class="timeline-sub">采摘加工 · 品质保障</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      ${p.reports && p.reports.length > 0 ? `
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon">📄</div>
-          <div class="card-title">检测报告</div>
-        </div>
-        <div class="card-body">
-          <div class="report-grid">
-            ${p.reports.map(r => `
-              <div class="report-item" onclick="openViewer('${r.img}')">
-                <img src="${r.img}" alt="${r.title}">
-                <div class="report-label">${r.title}</div>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-      </div>` : ''}
-
-      ${productImgsHTML}
-
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon">📖</div>
-          <div class="card-title">品牌故事</div>
-        </div>
-        <div class="card-body">
-          <div class="origin-desc">${p.brandStory}</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon">📞</div>
-          <div class="card-title">联系我们</div>
-        </div>
-        <div class="card-body">
-          ${phone ? `<div class="contact-row">
-            <div class="contact-label">电话</div>
-            <div class="contact-value">${phone}</div>
-            <button class="contact-copy" onclick="copyText('${phone}')">📋 复制</button>
-          </div>` : ''}
-          ${wechat ? `<div class="contact-row">
-            <div class="contact-label">微信</div>
-            <div class="contact-value">${wechat}</div>
-            <button class="contact-copy" onclick="copyText('${wechat}')">📋 复制</button>
-          </div>` : ''}
-          ${address ? `<div class="contact-row">
-            <div class="contact-label">地址</div>
-            <div class="contact-value">${address}</div>
-          </div>` : ''}
-          ${shop ? `<div class="contact-row">
-            <div class="contact-label">店铺</div>
-            <div class="contact-value">搜索"${shop}"</div>
-          </div>` : ''}
-        </div>
-      </div>
-
-      <div class="scan-info">该页面已被扫码 <span class="scan-num" id="scanCount">--</span> 次</div>
     </div>
+    <input type="file" id="harvestFileInput" accept="image/*" multiple style="display:none">
+  </div>
 
-    <div class="footer">
-      <div class="footer-line1">一物一码·溯源查询</div>
-      <div class="footer-line2">感谢您选择我们的产品</div>
-      <div class="footer-line3">星禾光年（昭通）文化有限公司旗下电商平台</div>
+  <div class="edit-section">
+    <div class="edit-section-title">👨‍ 农户信息</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>负责人姓名</label>
+        <input type="text" id="f_farmerName" placeholder="李大哥">
+      </div>
+      <div class="form-group">
+        <label>种植经验</label>
+        <input type="text" id="f_farmerExp" placeholder="20年">
+      </div>
     </div>
-  `;
-}
+    <div class="form-row">
+      <div class="form-group">
+        <label>种植面积</label>
+        <input type="text" id="f_farmerArea" placeholder="50亩">
+      </div>
+      <div class="form-group">
+        <label>种植方式</label>
+        <input type="text" id="f_farmerMethod" placeholder="生态种植">
+      </div>
+    </div>
+  </div>
 
-// ====== 扫码计数 ======
-const SCAN_COUNT_FILE = 'scan_counts.json';
-const GITHUB_API = 'https://api.github.com';
+  <div class="edit-section">
+    <div class="edit-section-title">🏔️ 产地描述</div>
+    <div class="form-group">
+      <textarea id="f_originDesc" rows="3" placeholder="描述产地的自然环境...">云南省昭通市巧家县，地处金沙江畔，属于北纬27°高原山地气候，日照充足，昼夜温差大，土壤肥沃，水源纯净，造就了优良品质。</textarea>
+    </div>
+    <div class="form-group">
+      <label>产地标签（逗号分隔）</label>
+      <input type="text" id="f_originTags" value="高山种植,日照充足,土壤肥沃,水源纯净">
+    </div>
+  </div>
 
-function getGitHubConfig() {
-  try {
-    const c = localStorage.getItem('trace_config');
-    return c ? JSON.parse(c) : null;
-  } catch(e) { return null; }
-}
+  <div class="edit-section">
+    <div class="edit-section-title"> 检测报告</div>
+    <div id="reportList"></div>
+    <button class="btn btn-sm btn-outline" onclick="addReportRow()" style="margin-top:6px">+ 添加报告</button>
+  </div>
 
-async function updateScanCount(productId) {
-  const el = document.getElementById('scanCount');
-  if (!el || !productId) { if(el) el.textContent = '0'; return; }
-  
-  const cfg = getGitHubConfig();
-  if (!cfg || !cfg.token || !cfg.owner || !cfg.repo) {
-    // 没有 GitHub token（访客设备），只显示 products.json 中的计数
-    el.textContent = '0';
-    return;
-  }
-  
-  const { owner, repo, token } = cfg;
-  const apiUrl = `${GITHUB_API}/repos/${owner}/${repo}/contents/${SCAN_COUNT_FILE}`;
-  
-  try {
-    // 1. 读取当前 scan_counts.json
-    let counts = {};
-    let sha = null;
-    try {
-      const resp = await fetch(apiUrl, { headers: { 'Authorization': `token ${token}` } });
-      if (resp.ok) {
-        const data = await resp.json();
-        sha = data.sha;
-        const rawStr = atob(data.content);
-        const utf8Str = decodeURIComponent(escape(rawStr));
-        counts = JSON.parse(utf8Str);
-      }
-    } catch(e) { /* 文件不存在，从空开始 */ }
+  <div class="edit-section">
+    <div class="edit-section-title">📖 品牌故事</div>
+    <div class="form-group">
+      <textarea id="f_brandStory" rows="4">扎根昭通滇东北高原，星禾优选溯源管理系统，记录青花椒、昭通苹果、高山土豆、核桃、板栗全生长流通链路。一码溯源，产地、种植、检测、物流全程透明可查，以数字守护本土农产品质，让山野好物的来路清晰可见，让云南高原风味安心奔赴全国与世界。</textarea>
+    </div>
+  </div>
+
+  <div class="edit-section">
+    <div class="edit-section-title">📞 联系方式</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>电话</label>
+        <div class="input-copy">
+          <input type="text" id="f_phone" value="15758099554">
+          <button class="btn-copy" onclick="copyField('f_phone')">📋 复制</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>微信</label>
+        <div class="input-copy">
+          <input type="text" id="f_wechat" value="STARHE_LIGHTYEAR">
+          <button class="btn-copy" onclick="copyField('f_wechat')">📋 复制</button>
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>地址</label>
+        <input type="text" id="f_address" value="云南省昭通市">
+      </div>
+      <div class="form-group">
+        <label>店铺名称</label>
+        <input type="text" id="f_shop" value="星禾优选云南好物">
+      </div>
+    </div>
+  </div>
+
+  <div style="height:80px"></div>
+</div>
+
+<!-- 编辑底部操作（移到edit-panel外部，避免移动端fixed定位问题） -->
+<div id="editBottomBar" style="display:none;position:fixed;bottom:0;left:50%;transform:translateX(-50%);max-width:750px;width:100%;background:#fff;padding:10px 16px;border-top:1px solid #eee;z-index:200;gap:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom))">
+  <button class="btn btn-outline" onclick="saveEdit()" style="flex:1;font-size:14px;padding:12px">💾 保存</button>
+  <button class="btn btn-publish" onclick="saveAndPublish()" style="flex:2;font-size:15px;padding:12px">🚀 保存并发布</button>
+</div>
+
+<!-- 二维码弹窗 -->
+<div class="qr-overlay" id="qrOverlay" onclick="closeQR()">
+  <div class="qr-card" onclick="event.stopPropagation()">
+    <h3>溯源二维码</h3>
+    <div class="qr-id" id="qrId"></div>
+    <div class="qr-box" id="qrBox"></div>
+    <div class="qr-url" id="qrUrl"></div>
+    <div class="qr-btns">
+      <button class="btn btn-sm btn-outline" onclick="copyQR()">📋 复制链接</button>
+      <button class="btn btn-sm btn-primary" onclick="downloadQR()">💾 下载二维码</button>
+    </div>
+    <div style="margin-top:10px"><button class="btn btn-sm btn-outline" onclick="closeQR()">关闭</button></div>
+  </div>
+</div>
+
+<!-- 设置弹窗 -->
+<div class="setting-overlay" id="settingOverlay" onclick="closeSetting()">
+  <div class="setting-card" onclick="event.stopPropagation()">
+    <h3>⚙️ GitHub 设置</h3>
+    <div class="desc">
+      设置一次即可。Token用于将数据直接发布到GitHub仓库，无需登录GitHub操作。<br><br>
+      获取Token：<a href="https://github.com/settings/tokens/new" target="_blank">点击这里生成 →</a><br>
+      Note填trace，勾选repo权限，Generate token
+    </div>
+    <div class="form-group">
+      <label>GitHub Token</label>
+      <input type="password" id="s_token" placeholder="ghp_xxxxxxxxxxxx">
+    </div>
+    <div class="form-group">
+      <label>仓库用户名</label>
+      <input type="text" id="s_owner" value="STARHELY">
+    </div>
+    <div class="form-group">
+      <label>仓库名</label>
+      <input type="text" id="s_repo" value="Starhely">
+    </div>
     
-    // 2. 递增计数（同一 session 不重复计数）
-    const sessionKey = 'scan_session_' + productId;
-    if (!sessionStorage.getItem(sessionKey)) {
-      counts[productId] = (counts[productId] || 0) + 1;
-      sessionStorage.setItem(sessionKey, '1');
+    <div style="border-top:1px solid #eee;padding-top:16px;margin-top:16px">
+      <div class="form-group">
+        <label>🖼️ 店铺装修图（溯源页头部横幅）</label>
+        <div class="img-upload" id="bannerPreview" onclick="pickBannerImg()" style="aspect-ratio:16/9">
+          <div class="upload-hint"><div class="icon">🏪</div><div class="text">点击上传店铺装修图</div></div>
+        </div>
+      </div>
+    </div>
+    
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn btn-outline" onclick="closeSetting()" style="flex:1">取消</button>
+      <button class="btn btn-primary" onclick="saveSetting()" style="flex:1">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 发布进度 -->
+<div class="publish-overlay" id="publishOverlay">
+  <div class="publish-card">
+    <div class="publish-icon" id="publishIcon">🚀</div>
+    <h3 id="publishTitle">正在发布...</h3>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-text" id="progressText"></div>
+    <div id="publishDone" style="display:none;margin-top:14px">
+      <button class="btn btn-primary btn-block" onclick="closePublish()">完成</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- 隐藏文件选择器（支持拍照和图库） -->
+<input type="file" id="fileInput" accept="image/*" style="display:none">
+<!-- 隐藏文件选择器（仅图库，无camera限制） -->
+<input type="file" id="fileInputGallery" accept="image/*" style="display:none">
+
+<script>
+// ====== 全局配置 ======
+const GITHUB_API = 'https://api.github.com';
+const SITE_BASE = () => `https://${getConfig().owner.toLowerCase()}.github.io/${getConfig().repo}/`;
+
+let config = { token:'', owner:'STARHELY', repo:'Starhely' };
+let products = {};
+let images = {};
+let harvestImages = {}; // { batchId: [dataUrl1, dataUrl2, ...] }
+let bannerImage = null; // 店铺装修图
+let carouselImages = []; // 轮播图数组 [dataUrl1, dataUrl2, ...]
+let editingId = null;
+let currentImgType = null;
+let currentQRId = null;
+let harvestUploadIndex = -1;
+
+// ====== 初始化 ======
+function init() {
+  const c = localStorage.getItem('trace_config');
+  if (c) { config = JSON.parse(c); }
+  
+  const p = localStorage.getItem('trace_products_v4');
+  if (p) { products = JSON.parse(p); }
+  
+  const img = localStorage.getItem('trace_images_v4');
+  if (img) { images = JSON.parse(img); }
+  
+  const hi = localStorage.getItem('trace_harvest_v1');
+  if (hi) { harvestImages = JSON.parse(hi); }
+  
+  const bn = localStorage.getItem('trace_banner_v1');
+  if (bn) { bannerImage = bn; setBannerPreview(bn); }
+  
+  const ci = localStorage.getItem('trace_carousel_v1');
+  if (ci) { carouselImages = JSON.parse(ci); renderCarousel(); }
+  
+  updateStatus();
+  renderList();
+  updateStats();
+  
+  if (!config.token) {
+    document.getElementById('guideBanner').style.display = 'flex';
+  }
+}
+
+function getConfig() { return config; }
+
+function saveData() {
+  localStorage.setItem('trace_products_v4', JSON.stringify(products));
+  localStorage.setItem('trace_images_v4', JSON.stringify(images));
+  localStorage.setItem('trace_harvest_v1', JSON.stringify(harvestImages));
+  if (bannerImage) localStorage.setItem('trace_banner_v1', bannerImage);
+  localStorage.setItem('trace_carousel_v1', JSON.stringify(carouselImages));
+}
+
+// ====== 状态 ======
+function updateStatus() {
+  const dot = document.getElementById('statusDot');
+  const txt = document.getElementById('statusText');
+  if (config.token) {
+    dot.classList.add('ok');
+    txt.textContent = '已连接';
+    document.getElementById('guideBanner').style.display = 'none';
+  } else {
+    dot.classList.remove('ok');
+    txt.textContent = '未连接';
+  }
+}
+
+// ====== 批次编号自动生成 ======
+function updateBatchNo() {
+  if (editingId) return; // 编辑模式不改编号
+  const type = document.getElementById('f_productType').value;
+  const now = new Date();
+  const dateStr = now.getFullYear() + String(now.getMonth()+1).padStart(2,'0') + String(now.getDate()).padStart(2,'0');
+  
+  // 计算今天已有的同类型序号
+  let maxSeq = 0;
+  Object.keys(products).forEach(id => {
+    if (id.startsWith('XH' + type) && id.includes(dateStr)) {
+      const seq = parseInt(id.slice(-2));
+      if (seq > maxSeq) maxSeq = seq;
+    }
+  });
+  const seq = String(maxSeq + 1).padStart(2, '0');
+  document.getElementById('f_batchNo').value = 'XH' + type + dateStr + seq;
+}
+
+// ====== 列表 ======
+function renderList() {
+  const el = document.getElementById('productList');
+  const items = Object.entries(products).sort((a,b) => b[0].localeCompare(a[0]));
+  
+  if (items.length === 0) {
+    el.innerHTML = '<div class="empty"><div class="icon">📦</div><p>暂无批次，点击上方新增</p></div>';
+    return;
+  }
+  
+  el.innerHTML = items.map(([id, p]) => {
+    const imgs = images[id] || {};
+    const hasThumb = imgs.cover;
+    return `<div class="product-list-item">
+      <div class="pli-thumb">${hasThumb ? `<img src="${imgs.cover}">` : '📦'}</div>
+      <div class="pli-info">
+        <div class="pli-name">${p.name || '未命名'}</div>
+        <div class="pli-meta">
+          <span class="pli-id">${id}</span>
+          ${p.farmerName ? ' · ' + p.farmerName : ''}
+          ${p.pickDate ? ' · ' + p.pickDate : ''}
+        </div>
+      </div>
+      <div class="pli-actions">
+        <button class="btn btn-xs btn-outline" onclick="showQR('${id}')">📱</button>
+        <button class="btn btn-xs btn-outline" onclick="openEdit('${id}')">✏️</button>
+        <button class="btn btn-xs btn-danger" onclick="deleteProduct('${id}')">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updateStats() {
+  const items = Object.values(products);
+  document.getElementById('statTotal').textContent = items.length;
+  const farmers = new Set(items.map(p => p.farmerName).filter(Boolean));
+  document.getElementById('statFarmers').textContent = farmers.size;
+  let imgCount = 0;
+  Object.values(images).forEach(bi => { Object.values(bi).forEach(v => { if(v) imgCount++; }); });
+  Object.values(harvestImages).forEach(arr => { imgCount += (arr||[]).length; });
+  imgCount += carouselImages.length;
+  if (bannerImage) imgCount++;
+  document.getElementById('statImgs').textContent = imgCount;
+}
+
+// ====== 轮播图管理 ======
+function pickCarouselImg() {
+  if (carouselImages.length >= 4) {
+    showToast('最多添加4张轮播图', 'error');
+    return;
+  }
+  const inp = document.getElementById('carouselFileInput');
+  inp.onchange = function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      compressImage(ev.target.result, 1200, 0.85, function(compressed) {
+        carouselImages.push(compressed);
+        saveData();
+        renderCarousel();
+        updateStats();
+        showToast('✓ 已添加轮播图', 'success');
+      });
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+  inp.click();
+}
+
+function renderCarousel() {
+  const grid = document.getElementById('carouselGrid');
+  if (!grid) return;
+  
+  let html = carouselImages.map((img, i) => `
+    <div class="multi-img-item has-img">
+      <img src="${img}">
+      <button class="del-btn" onclick="removeCarouselImg(${i})">×</button>
+    </div>
+  `).join('');
+  
+  if (carouselImages.length < 4) {
+    html += `<div class="multi-img-item" onclick="pickCarouselImg()">
+      <div class="upload-hint"><div class="icon">➕</div><div class="text">添加海报</div></div>
+    </div>`;
+  }
+  
+  grid.innerHTML = html;
+}
+
+function removeCarouselImg(index) {
+  carouselImages.splice(index, 1);
+  saveData();
+  renderCarousel();
+  updateStats();
+}
+
+// ====== 设置 ======
+function openSetting() {
+  document.getElementById('s_token').value = config.token || '';
+  document.getElementById('s_owner').value = config.owner || '';
+  document.getElementById('s_repo').value = config.repo || '';
+  if (bannerImage) setBannerPreview(bannerImage);
+  document.getElementById('settingOverlay').classList.add('active');
+}
+function closeSetting() { document.getElementById('settingOverlay').classList.remove('active'); }
+function saveSetting() {
+  config.token = document.getElementById('s_token').value.trim();
+  config.owner = document.getElementById('s_owner').value.trim();
+  config.repo = document.getElementById('s_repo').value.trim();
+  if (!config.token) { showToast('请输入Token','error'); return; }
+  saveData();
+  updateStatus();
+  closeSetting();
+  showToast('✓ 设置已保存', 'success');
+}
+
+// ====== 店铺装修图 ======
+function pickBannerImg() {
+  const inp = document.getElementById('fileInputGallery');
+  inp.onchange = function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      compressImage(ev.target.result, 1600, 0.85, function(compressed) {
+        bannerImage = compressed;
+        setBannerPreview(compressed);
+        saveData();
+        showToast('✓ 装修图已保存', 'success');
+      });
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+  inp.click();
+}
+
+function setBannerPreview(dataUrl) {
+  const el = document.getElementById('bannerPreview');
+  if (!el) return;
+  if (dataUrl) {
+    el.classList.add('has-img');
+    let imgEl = el.querySelector('img');
+    if (!imgEl) { imgEl = document.createElement('img'); el.appendChild(imgEl); }
+    imgEl.src = dataUrl;
+  } else {
+    el.classList.remove('has-img');
+    const imgEl = el.querySelector('img');
+    if (imgEl) imgEl.remove();
+  }
+}
+
+// ====== 编辑面板 ======
+function openEdit(id) {
+  if (!config.token) { openSetting(); return; }
+  editingId = id || null;
+  document.getElementById('editOverlay').classList.add('active');
+  document.getElementById('editPanel').classList.add('active');
+  document.getElementById('editBottomBar').style.display = 'flex';
+  
+  if (id && products[id]) {
+    document.getElementById('editTitle').textContent = '编辑：' + id;
+    fillEditForm(products[id], id);
+    const imgs = images[id] || {};
+    setImgPreview('cover', imgs.cover || null);
+    setImgPreview('origin', imgs.origin || null);
+    setImgPreview('farmer', imgs.farmer || null);
+    renderHarvestImages(id);
+  } else {
+    document.getElementById('editTitle').textContent = '新增批次';
+    resetEditForm();
+    setImgPreview('cover', null);
+    setImgPreview('origin', null);
+    setImgPreview('farmer', null);
+    renderHarvestImages(null);
+    updateBatchNo();
+  }
+  
+  document.getElementById('reportList').innerHTML = '';
+  if (id && products[id] && products[id].reports) {
+    products[id].reports.forEach(r => addReportRow(r.title, r.imgName));
+  }
+}
+
+function closeEdit() {
+  document.getElementById('editOverlay').classList.remove('active');
+  document.getElementById('editPanel').classList.remove('active');
+  document.getElementById('editBottomBar').style.display = 'none';
+  editingId = null;
+}
+
+function resetEditForm() {
+  const now = new Date();
+  document.getElementById('f_productType').value = 'HJ';
+  document.getElementById('f_name').value = '';
+  document.getElementById('f_subtitle').value = '';
+  document.getElementById('f_origin').value = '云南省昭通市';
+  document.getElementById('f_altitude').value = '1200-1800米';
+  document.getElementById('f_pickDate').value = '';
+  document.getElementById('f_produceDate').value = '';
+  document.getElementById('f_netWeight').value = '250g';
+  document.getElementById('f_shelfLife').value = '18个月';
+  document.getElementById('f_farmerName').value = '';
+  document.getElementById('f_farmerExp').value = '';
+  document.getElementById('f_farmerArea').value = '';
+  document.getElementById('f_farmerMethod').value = '生态种植';
+  document.getElementById('f_originDesc').value = '云南省昭通市巧家县，地处金沙江畔，属于北纬27°高原山地气候，日照充足，昼夜温差大，土壤肥沃，水源纯净，造就了优良品质。';
+  document.getElementById('f_originTags').value = '高山种植,日照充足,土壤肥沃,水源纯净';
+  document.getElementById('f_brandStory').value = '扎根昭通滇东北高原，星禾优选溯源管理系统，记录青花椒、昭通苹果、高山土豆、核桃、板栗全生长流通链路。一码溯源，产地、种植、检测、物流全程透明可查，以数字守护本土农产品质，让山野好物的来路清晰可见，让云南高原风味安心奔赴全国与世界。';
+  document.getElementById('f_phone').value = '15758099554';
+  document.getElementById('f_wechat').value = 'STARHE_LIGHTYEAR';
+  document.getElementById('f_address').value = '云南省昭通市';
+  document.getElementById('f_shop').value = '星禾优选云南好物';
+}
+
+function fillEditForm(p, id) {
+  // 从批次编号推断产品类型
+  let pType = 'HJ';
+  if (id.startsWith('XH')) {
+    const typeCode = id.slice(2, 4);
+    if (['HJ','TD','HT','PG','BL'].includes(typeCode)) pType = typeCode;
+  }
+  document.getElementById('f_productType').value = pType;
+  document.getElementById('f_batchNo').value = id;
+  document.getElementById('f_name').value = p.name || '';
+  document.getElementById('f_subtitle').value = p.subtitle || '';
+  document.getElementById('f_origin').value = p.origin || '';
+  document.getElementById('f_altitude').value = p.altitude || '';
+  document.getElementById('f_pickDate').value = parseDateForInput(p.pickDate || '');
+  document.getElementById('f_produceDate').value = parseDateForInput(p.produceDate || '');
+  document.getElementById('f_netWeight').value = p.netWeight || '';
+  document.getElementById('f_shelfLife').value = p.shelfLife || '';
+  document.getElementById('f_farmerName').value = p.farmerName || '';
+  document.getElementById('f_farmerExp').value = p.farmerExp || '';
+  document.getElementById('f_farmerArea').value = p.farmerArea || '';
+  document.getElementById('f_farmerMethod').value = p.farmerMethod || '';
+  document.getElementById('f_originDesc').value = p.originDesc || '';
+  document.getElementById('f_originTags').value = (p.originTags||[]).join(',');
+  document.getElementById('f_brandStory').value = p.brandStory || '';
+  document.getElementById('f_phone').value = p.contact?.phone || '15758099554';
+  document.getElementById('f_wechat').value = p.contact?.wechat || 'STARHE_LIGHTYEAR';
+  document.getElementById('f_address').value = p.contact?.address || '云南省昭通市';
+  document.getElementById('f_shop').value = p.contact?.shop || '星禾优选云南好物';
+}
+
+function saveEdit() {
+  try {
+  const batchNo = document.getElementById('f_batchNo').value.trim();
+  if (!batchNo) { showToast('请输入批次编号','error'); return; }
+  const name = document.getElementById('f_name').value.trim();
+  if (!name) { showToast('请输入产品名称','error'); return; }
+  
+  const reports = [];
+  document.querySelectorAll('#reportList .img-row').forEach(row => {
+    const t = row.querySelector('.rpt-title').value.trim();
+    const n = row.querySelector('.rpt-imgname').value.trim();
+    if (t) reports.push({title:t, img: n || 'img_report.jpg', imgName: n || 'img_report.jpg'});
+  });
+  
+  // 收集采摘/加工现场图
+  const hImgs = (harvestImages[editingId || batchNo] || []).filter(Boolean);
+  
+  const pickDate = formatDateCN(document.getElementById('f_pickDate').value);
+  const produceDate = formatDateCN(document.getElementById('f_produceDate').value);
+  
+  const product = {
+    brand: "星禾优选",
+    name: name,
+    subtitle: document.getElementById('f_subtitle').value,
+    productType: document.getElementById('f_productType').value,
+    coverImg: 'img_cover.jpg',
+    origin: document.getElementById('f_origin').value,
+    altitude: document.getElementById('f_altitude').value,
+    pickDate: pickDate,
+    processingTime: pickDate, // 默认与采摘时间同步
+    produceDate: produceDate,
+    netWeight: document.getElementById('f_netWeight').value,
+    shelfLife: document.getElementById('f_shelfLife').value,
+    batchNo: batchNo,
+    originDesc: document.getElementById('f_originDesc').value,
+    originTags: document.getElementById('f_originTags').value.split(',').map(t=>t.trim()).filter(Boolean),
+    originPhoto: 'img_origin_farm.jpg',
+    farmerName: document.getElementById('f_farmerName').value,
+    farmerPhoto: 'img_farmer.jpg',
+    farmerExp: document.getElementById('f_farmerExp').value,
+    farmerArea: document.getElementById('f_farmerArea').value,
+    farmerMethod: document.getElementById('f_farmerMethod').value,
+    harvestPhotos: hImgs.length > 0 ? hImgs.map((_, i) => `harvest_${batchNo}_${i+1}.jpg`) : [],
+    reports: reports.length > 0 ? reports : [{title:"农残检测报告",img:"img_report.jpg",imgName:"img_report.jpg"}],
+    productImgs: [], // 由发布时动态填充
+    videos: [],
+    brandStory: document.getElementById('f_brandStory').value,
+    contact: {
+      phone: document.getElementById('f_phone').value,
+      wechat: document.getElementById('f_wechat').value,
+      address: document.getElementById('f_address').value,
+      shop: document.getElementById('f_shop').value
+    },
+    scanCount: (products[editingId] || {}).scanCount || 0
+  };
+  
+  if (editingId && editingId !== batchNo) {
+    if (images[editingId]) { images[batchNo] = images[editingId]; delete images[editingId]; }
+    if (harvestImages[editingId]) { harvestImages[batchNo] = harvestImages[editingId]; delete harvestImages[editingId]; }
+    delete products[editingId];
+  }
+  
+  products[batchNo] = product;
+  saveData();
+  renderList();
+  updateStats();
+  closeEdit();
+  showToast('✓ 批次已保存', 'success');
+  } catch(e) {
+    console.error('saveEdit error:', e);
+    showToast('保存出错：' + e.message, 'error');
+  }
+}
+
+async function saveAndPublish() {
+  try {
+    const batchNo = document.getElementById('f_batchNo').value.trim();
+    if (!batchNo) { showToast('请输入批次编号','error'); return; }
+    const name = document.getElementById('f_name').value.trim();
+    if (!name) { showToast('请输入产品名称','error'); return; }
+    saveEdit();
+    setTimeout(() => { publishAll(); }, 500);
+  } catch(e) {
+    console.error('saveAndPublish error:', e);
+    showToast('操作出错：' + e.message, 'error');
+  }
+}
+
+// ====== 图片上传 ======
+function pickImage(type) {
+  currentImgType = type;
+  // 支持拍照和图库（不限制capture）
+  document.getElementById('fileInput').click();
+}
+
+document.getElementById('fileInput').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    compressImage(ev.target.result, 1200, 0.8, function(compressed) {
+      setImgPreview(currentImgType, compressed);
+      const id = editingId || document.getElementById('f_batchNo').value.trim();
+      if (!id) { showToast('请先填写批次编号','error'); return; }
+      if (!images[id]) images[id] = {};
+      images[id][currentImgType] = compressed;
+      saveData();
+    });
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+});
+
+// 采摘/加工现场图 - 多图上传
+function pickHarvestImg() {
+  const inp = document.getElementById('harvestFileInput');
+  inp.onchange = function(e) {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+    const id = editingId || document.getElementById('f_batchNo').value.trim();
+    if (!id) { showToast('请先填写批次编号','error'); return; }
+    if (!harvestImages[id]) harvestImages[id] = [];
+    
+    let processed = 0;
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        compressImage(ev.target.result, 1200, 0.8, function(compressed) {
+          harvestImages[id].push(compressed);
+          processed++;
+          if (processed === files.length) {
+            saveData();
+            renderHarvestImages(id);
+            updateStats();
+            showToast('✓ 已添加' + files.length + '张照片', 'success');
+          }
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+    e.target.value = '';
+  };
+  inp.click();
+}
+
+function renderHarvestImages(id) {
+  const grid = document.getElementById('harvestImgGrid');
+  const imgs = id ? (harvestImages[id] || []) : [];
+  
+  let html = imgs.map((img, i) => `
+    <div class="multi-img-item has-img">
+      <img src="${img}">
+      <button class="del-btn" onclick="removeHarvestImg('${id}',${i})">×</button>
+    </div>
+  `).join('');
+  
+  html += `<div class="multi-img-item" onclick="pickHarvestImg()">
+    <div class="upload-hint"><div class="icon"></div><div class="text">添加照片</div></div>
+  </div>`;
+  
+  grid.innerHTML = html;
+}
+
+function removeHarvestImg(id, index) {
+  if (harvestImages[id]) {
+    harvestImages[id].splice(index, 1);
+    saveData();
+    renderHarvestImages(id);
+    updateStats();
+  }
+}
+
+function compressImage(dataUrl, maxW, quality, cb) {
+  const img = new Image();
+  img.onload = function() {
+    try {
+      let w = img.width, h = img.height;
+      if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+      // 移动端canvas尺寸限制，逐步缩小
+      const MAX_CANVAS = 2048;
+      while (w > MAX_CANVAS || h > MAX_CANVAS) {
+        w = Math.round(w * 0.75);
+        h = Math.round(h * 0.75);
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      const result = canvas.toDataURL('image/jpeg', quality);
+      if (!result || result.length < 100) {
+        // 压缩失败，返回原图
+        cb(dataUrl);
+      } else {
+        cb(result);
+      }
+    } catch(e) {
+      console.error('compressImage error:', e);
+      cb(dataUrl); // 失败时返回原图
+    }
+  };
+  img.onerror = function() {
+    console.error('Image load failed');
+    cb(dataUrl); // 加载失败时返回原图dataUrl
+  };
+  img.src = dataUrl;
+}
+
+function setImgPreview(type, dataUrl) {
+  const el = document.getElementById('img' + type.charAt(0).toUpperCase() + type.slice(1));
+  if (!el) return;
+  if (dataUrl) {
+    el.classList.add('has-img');
+    let imgEl = el.querySelector('img');
+    if (!imgEl) { imgEl = document.createElement('img'); el.appendChild(imgEl); }
+    imgEl.src = dataUrl;
+  } else {
+    el.classList.remove('has-img');
+    const imgEl = el.querySelector('img');
+    if (imgEl) imgEl.remove();
+  }
+}
+
+// ====== 日期格式转换 ======
+function formatDateCN(val) {
+  // 将 date input 的值(2024-05-15)转为中文格式(2024年5月15日)
+  if (!val) return '';
+  const parts = val.split('-');
+  if (parts.length === 3) return parts[0] + '年' + parseInt(parts[1]) + '月' + parseInt(parts[2]) + '日';
+  return val; // 已经是中文格式或其他格式，保持原样
+}
+function parseDateForInput(val) {
+  // 将中文日期(2024年5月15日)转为 date input 格式(2024-05-15)
+  if (!val) return '';
+  const m = val.match(/(\d{4})年(\d{1,2})月(\d{1,2})日/);
+  if (m) return m[1] + '-' + m[2].padStart(2,'0') + '-' + m[3].padStart(2,'0');
+  if (/^\d{4}-\d{2}-\d{2}$/.test(val)) return val;
+  return '';
+}
+
+// ====== 复制功能 ======
+function copyField(id) {
+  const val = document.getElementById(id).value;
+  navigator.clipboard.writeText(val).then(()=>showToast('已复制','success')).catch(()=>{
+    const t=document.createElement('textarea');t.value=val;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);showToast('已复制','success');
+  });
+}
+
+// ====== 检测报告 ======
+function addReportRow(title, imgName) {
+  const div = document.createElement('div');
+  div.className = 'img-row';
+  div.innerHTML = `
+    <input class="rpt-title" type="text" placeholder="报告名称" value="${title||''}">
+    <input class="rpt-imgname" type="text" placeholder="图片文件名" value="${imgName||'img_report.jpg'}">
+    <button class="btn btn-xs btn-danger" onclick="this.parentElement.remove()">×</button>
+  `;
+  document.getElementById('reportList').appendChild(div);
+}
+
+// ====== 删除 ======
+function deleteProduct(id) {
+  if (!confirm('确定删除批次 ' + id + '？')) return;
+  delete products[id];
+  delete images[id];
+  delete harvestImages[id];
+  saveData();
+  renderList();
+  updateStats();
+  showToast('已删除', 'success');
+}
+
+// ====== 二维码 ======
+function showQR(id) {
+  currentQRId = id;
+  const url = SITE_BASE() + 'index.html?id=' + id;
+  document.getElementById('qrId').textContent = '批次：' + id;
+  document.getElementById('qrUrl').textContent = url;
+  const box = document.getElementById('qrBox');
+  box.innerHTML = '';
+  new QRCode(box, { text:url, width:200, height:200, colorDark:'#2d5a27', colorLight:'#ffffff', correctLevel:QRCode.CorrectLevel.H });
+  document.getElementById('qrOverlay').classList.add('active');
+}
+function closeQR() { document.getElementById('qrOverlay').classList.remove('active'); }
+function copyQR() {
+  const url = document.getElementById('qrUrl').textContent;
+  navigator.clipboard.writeText(url).then(()=>showToast('已复制','success')).catch(()=>{
+    const t=document.createElement('textarea');t.value=url;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);showToast('已复制','success');
+  });
+}
+function downloadQR() {
+  const canvas = document.querySelector('#qrBox canvas');
+  if (!canvas) { const img=document.querySelector('#qrBox img'); if(img){const a=document.createElement('a');a.href=img.src;a.download='QR_'+currentQRId+'.png';a.click();} return; }
+  const a = document.createElement('a');
+  a.href = canvas.toDataURL('image/png');
+  a.download = 'QR_' + currentQRId + '.png';
+  a.click();
+}
+
+// ====== 发布到GitHub ======
+async function publishAll() {
+  if (!config.token) { openSetting(); return; }
+  if (Object.keys(products).length === 0) { showToast('暂无批次可发布','error'); return; }
+  
+  const overlay = document.getElementById('publishOverlay');
+  const fill = document.getElementById('progressFill');
+  const text = document.getElementById('progressText');
+  const icon = document.getElementById('publishIcon');
+  const title = document.getElementById('publishTitle');
+  const done = document.getElementById('publishDone');
+  
+  overlay.classList.add('active');
+  fill.style.width = '0%';
+  text.innerHTML = '';
+  icon.textContent = '🚀';
+  title.textContent = '正在发布...';
+  done.style.display = 'none';
+  
+  function log(msg) { text.innerHTML += msg + '<br>'; text.scrollTop = text.scrollHeight; }
+  function progress(pct) { fill.style.width = pct + '%'; }
+  
+  try {
+    const allImgs = {};
+    
+    // 收集每个批次的图片
+    for (const [batchId, batchImgs] of Object.entries(images)) {
+      for (const [type, dataUrl] of Object.entries(batchImgs)) {
+        if (!dataUrl) continue;
+        let filename;
+        if (type === 'cover') filename = `cover_${batchId}.jpg`;
+        else if (type === 'origin') filename = `origin_${batchId}.jpg`;
+        else if (type === 'farmer') filename = `farmer_${batchId}.jpg`;
+        else filename = `${type}_${batchId}.jpg`;
+        allImgs[filename] = dataUrl;
+        
+        if (products[batchId]) {
+          if (type === 'cover') products[batchId].coverImg = filename;
+          else if (type === 'origin') products[batchId].originPhoto = filename;
+          else if (type === 'farmer') products[batchId].farmerPhoto = filename;
+        }
+      }
     }
     
-    // 3. 写回 GitHub
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(counts, null, 2))));
-    const body = {
-      message: `Update scan count for ${productId}`,
-      content: content,
-      branch: 'main'
-    };
-    if (sha) body.sha = sha;
+    // 收集采摘/加工现场图
+    for (const [batchId, hImgs] of Object.entries(harvestImages)) {
+      if (!hImgs || !products[batchId]) continue;
+      products[batchId].harvestPhotos = [];
+      hImgs.forEach((dataUrl, i) => {
+        if (!dataUrl) return;
+        const filename = `harvest_${batchId}_${i+1}.jpg`;
+        allImgs[filename] = dataUrl;
+        products[batchId].harvestPhotos.push(filename);
+      });
+    }
     
-    const putResp = await fetch(apiUrl, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `token ${token}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(body)
+    // 店铺装修图
+    if (bannerImage) {
+      allImgs['banner.jpg'] = bannerImage;
+    }
+    
+    // 轮播图
+    const carouselFilenames = [];
+    carouselImages.forEach((dataUrl, i) => {
+      if (!dataUrl || dataUrl.startsWith('http')) return;
+      const filename = `carousel_${i+1}.jpg`;
+      allImgs[filename] = dataUrl;
+      carouselFilenames.push(filename);
     });
     
-    if (putResp.ok || putResp.status === 409) {
-      // 显示最新计数
-      el.textContent = counts[productId] || 0;
-    } else {
-      el.textContent = counts[productId] || 0;
+    // 过滤掉已经是远程URL的图片（从GitHub同步来的）
+    const imgEntries = Object.entries(allImgs).filter(([_, dataUrl]) => {
+      return dataUrl && !dataUrl.startsWith('http://') && !dataUrl.startsWith('https://');
+    });
+    
+    const skippedCount = Object.entries(allImgs).filter(([_, dataUrl]) => {
+      return dataUrl && (dataUrl.startsWith('http://') || dataUrl.startsWith('https://'));
+    }).length;
+    
+    const totalSteps = imgEntries.length + 1;
+    let step = 0;
+    
+    if (skippedCount > 0) {
+      log(`⏭️ 跳过 ${skippedCount} 张已存在的图片`);
     }
-  } catch(e) {
-    console.warn('扫码计数失败:', e);
-    el.textContent = '0';
+    
+    for (const [filename, dataUrl] of imgEntries) {
+      step++;
+      progress((step / totalSteps) * 100);
+      log(`📷 上传 ${filename}...`);
+      const base64 = dataUrl.split(',')[1];
+      const ok = await uploadFile(filename, base64, `Update ${filename}`);
+      log(ok ? '  ✓ 成功' : '  ✗ 失败');
+    }
+    
+    step++;
+    progress((step / totalSteps) * 90);
+    log('📄 上传 products.json...');
+    const jsonStr = JSON.stringify(products, null, 2);
+    const jsonBase64 = btoa(unescape(encodeURIComponent(jsonStr)));
+    const jsonOk = await uploadFile('products.json', jsonBase64, `Update products (${Object.keys(products).length} batches)`);
+    log(jsonOk ? '  ✓ 成功' : '  ✗ 失败');
+    
+    // 发布轮播图数据
+    log('📄 上传 carousel.json...');
+    const carouselData = { images: carouselImages.map((_, i) => `carousel_${i+1}.jpg`) };
+    const carouselJsonStr = JSON.stringify(carouselData, null, 2);
+    const carouselJsonBase64 = btoa(unescape(encodeURIComponent(carouselJsonStr)));
+    const carouselOk = await uploadFile('carousel.json', carouselJsonBase64, `Update carousel (${carouselData.images.length} images)`);
+    log(carouselOk ? '  ✓ 成功' : '  ✗ 失败');
+    
+    progress(100);
+    
+    if (jsonOk) {
+      icon.textContent = '✅';
+      title.textContent = '发布成功！';
+      log('<br> 网站将在1-2分钟内更新');
+      log(`📱 ${SITE_BASE()}index.html`);
+    } else {
+      icon.textContent = '⚠️';
+      title.textContent = '部分上传失败';
+      log('<br>请检查Token权限和网络连接');
+    }
+    
+  } catch(err) {
+    icon.textContent = '❌';
+    title.textContent = '发布失败';
+    log('<br>错误：' + err.message);
+  }
+  
+  done.style.display = 'block';
+}
+
+function closePublish() {
+  document.getElementById('publishOverlay').classList.remove('active');
+}
+
+// ====== 从 GitHub 同步数据 ======
+async function syncFromGitHub() {
+  if (!config.token) { openSetting(); return; }
+  
+  const btn = document.getElementById('syncBtn');
+  const originalText = btn.textContent;
+  btn.textContent = '⏳ 同步中...';
+  btn.disabled = true;
+  
+  try {
+    const { owner, repo, token } = config;
+    
+    // 1. Fetch products.json
+    showToast('正在获取产品数据...', '');
+    const productsUrl = `${GITHUB_API}/repos/${owner}/${repo}/contents/products.json`;
+    const productsResp = await fetch(productsUrl, {
+      headers: { 'Authorization': `token ${token}` }
+    });
+    
+    if (!productsResp.ok) {
+      throw new Error('无法获取 products.json');
+    }
+    
+    const productsData = await productsResp.json();
+    // 正确处理 UTF-8 编码的 base64
+    const rawBase64 = productsData.content;
+    const rawStr = atob(rawBase64);
+    const utf8Str = decodeURIComponent(escape(rawStr));
+    const productsJson = JSON.parse(utf8Str);
+    
+    // Update local products
+    products = productsJson;
+    localStorage.setItem('trace_products_v4', JSON.stringify(products));
+    
+    // 2. Fetch repo contents to find image files
+    const contentsUrl = `${GITHUB_API}/repos/${owner}/${repo}/contents`;
+    const contentsResp = await fetch(contentsUrl, {
+      headers: { 'Authorization': `token ${token}` }
+    });
+    
+    if (!contentsResp.ok) {
+      throw new Error('无法获取文件列表');
+    }
+    
+    const files = await contentsResp.json();
+    const imageFiles = files.filter(f => f.name.endsWith('.jpg') || f.name.endsWith('.png'));
+    
+    // 3. Map images to batches
+    images = {};
+    harvestImages = {};
+    
+    for (const file of imageFiles) {
+      const name = file.name;
+      
+      // Skip static images and carousel images (handled via carousel.json)
+      if (['img_cover.jpg', 'img_farmer.jpg', 'img_origin_farm.jpg', 'img_product.jpg', 'img_report.jpg', 'banner.jpg'].includes(name) || /^carousel_\d+\.jpg$/.test(name)) {
+        continue;
+      }
+      
+      // Parse filename to determine type and batch
+      // Format: cover_XHHJ2026071501.jpg, origin_..., farmer_..., harvest_XHHJ2026071501_1.jpg
+      let match = name.match(/^(cover|origin|farmer)_(.+)\.jpg$/);
+      if (match) {
+        const type = match[1];
+        const batchId = match[2];
+        if (!images[batchId]) images[batchId] = {};
+        images[batchId][type] = file.download_url;
+        continue;
+      }
+      
+      // Harvest images
+      match = name.match(/^harvest_(.+)_(\d+)\.jpg$/);
+      if (match) {
+        const batchId = match[1];
+        if (!harvestImages[batchId]) harvestImages[batchId] = [];
+        const index = parseInt(match[2]) - 1;
+        harvestImages[batchId][index] = file.download_url;
+      }
+    }
+    
+    localStorage.setItem('trace_images_v4', JSON.stringify(images));
+    localStorage.setItem('trace_harvest_v1', JSON.stringify(harvestImages));
+    
+    // 4. Fetch banner if exists
+    const bannerFile = imageFiles.find(f => f.name === 'banner.jpg');
+    if (bannerFile) {
+      bannerImage = bannerFile.download_url;
+      localStorage.setItem('trace_banner_v1', bannerImage);
+      setBannerPreview(bannerImage);
+    }
+    
+    // 5. Fetch carousel.json if exists
+    try {
+      const carouselUrl = `${GITHUB_API}/repos/${owner}/${repo}/contents/carousel.json`;
+      const carouselResp = await fetch(carouselUrl, {
+        headers: { 'Authorization': `token ${token}` }
+      });
+      
+      if (carouselResp.ok) {
+        const carouselData = await carouselResp.json();
+        // 正确处理 UTF-8 编码的 base64
+        const carouselRawStr = atob(carouselData.content);
+        const carouselUtf8Str = decodeURIComponent(escape(carouselRawStr));
+        const carouselJson = JSON.parse(carouselUtf8Str);
+        const carouselNames = carouselJson.images || [];
+        
+        // Map carousel images to URLs
+        carouselImages = carouselNames.map(name => {
+          const file = imageFiles.find(f => f.name === name);
+          return file ? file.download_url : null;
+        }).filter(Boolean);
+        
+        localStorage.setItem('trace_carousel_v1', JSON.stringify(carouselImages));
+        renderCarousel();
+      }
+    } catch(e) {
+      console.warn('No carousel.json found', e);
+    }
+    
+    // 6. Update UI
+    renderList();
+    updateStats();
+    updateStatus();
+    
+    const productCount = Object.keys(products).length;
+    const imageCount = Object.values(images).reduce((sum, batch) => sum + Object.keys(batch).length, 0);
+    const harvestCount = Object.values(harvestImages).reduce((sum, arr) => sum + (arr ? arr.filter(Boolean).length : 0), 0);
+    
+    showToast(`✓ 同步完成：${productCount}个批次，${imageCount}张图片，${carouselImages.length}张轮播图`, 'success');
+    
+  } catch(err) {
+    console.error('Sync error:', err);
+    showToast('✗ 同步失败：' + err.message, 'error');
+  } finally {
+    btn.textContent = originalText;
+    btn.disabled = false;
   }
 }
 
-// 启动
-(async function() {
-  const [products, carouselData] = await Promise.all([
-    loadJSON('products.json'),
-    loadJSON('carousel.json')
-  ]);
+async function uploadFile(filename, base64Content, message) {
+  const { owner, repo, token } = config;
+  const url = `${GITHUB_API}/repos/${owner}/${repo}/contents/${filename}`;
   
-  const allProducts = products || FALLBACK_PRODUCTS;
-  const product = allProducts[PRODUCT_ID] || null;
-  const carousel = (carouselData && carouselData.images) ? carouselData.images : [];
+  let sha = null;
+  try {
+    const resp = await fetch(url, { headers: { 'Authorization': `token ${token}` } });
+    if (resp.ok) {
+      const data = await resp.json();
+      sha = data.sha;
+    }
+  } catch(e) {}
   
-  render(product, carousel);
+  const body = { message, content: base64Content };
+  if (sha) body.sha = sha;
   
-  // 启动轮播图自动播放
-  startCarousel();
-  
-  // 更新真实扫码计数
-  updateScanCount(PRODUCT_ID);
-})();
+  try {
+    const resp = await fetch(url, {
+      method: 'PUT',
+      headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    return resp.ok;
+  } catch(e) {
+    console.error('Upload failed:', filename, e);
+    return false;
+  }
+}
+
+// ====== Toast ======
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + (type||'');
+  setTimeout(()=>t.classList.add('show'), 10);
+  setTimeout(()=>t.classList.remove('show'), 2500);
+}
+
+// ====== 启动 ======
+init();
 </script>
 </body>
 </html>
