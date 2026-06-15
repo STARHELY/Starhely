@@ -1,31 +1,37 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>云南巧家青花椒 · 产品溯源</title>
+<title>星禾优选·产品溯源</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{max-width:750px;margin:0 auto;background:#f5f0e8;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;color:#333;-webkit-font-smoothing:antialiased}
 img{max-width:100%;display:block}
 
 /* 顶部品牌区 */
-.header{background:linear-gradient(135deg,#2d5a27,#1e3f1a);padding:40px 24px 32px;text-align:center;position:relative;overflow:hidden}
-.header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:24px;background:#f5f0e8;border-radius:24px 24px 0 0}
-.header .logo{width:72px;height:72px;background:rgba(255,255,255,0.15);border-radius:50%;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,0.3)}
-.header .logo svg{width:36px;height:36px}
-.header h1{font-size:26px;color:#fff;font-weight:700;letter-spacing:3px;margin-bottom:6px}
-.header .subtitle{font-size:14px;color:rgba(255,255,255,0.7);letter-spacing:2px}
-.header .auth{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.12);padding:6px 16px;border-radius:20px;margin-top:14px;font-size:12px;color:rgba(255,255,255,0.8)}
+.header{position:relative;overflow:hidden;background:#2d5a27}
+.header-bg{width:100%;height:auto;display:block;object-fit:cover}
+.header-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.05) 0%,rgba(0,0,0,0.25) 60%,rgba(0,0,0,0.55) 100%)}
+.header-content{position:absolute;bottom:0;left:0;right:0;padding:28px 20px 22px;text-align:center}
+.header-content h1{font-size:22px;color:#fff;font-weight:700;letter-spacing:2px;margin-bottom:6px;text-shadow:0 2px 8px rgba(0,0,0,0.3)}
+.header-content .subtitle{font-size:13px;color:rgba(255,255,255,0.9);letter-spacing:3px;text-shadow:0 1px 4px rgba(0,0,0,0.3)}
+.header-content .auth{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.2);padding:5px 14px;border-radius:20px;margin-top:10px;font-size:11px;color:#fff;backdrop-filter:blur(4px)}
+/* 无装修图时的默认头部 */
+.header-default{background:linear-gradient(135deg,#2d5a27,#1e3f1a);padding:40px 24px 32px;text-align:center;position:relative}
+.header-default::after{content:'';position:absolute;bottom:0;left:0;right:0;height:24px;background:#f5f0e8;border-radius:24px 24px 0 0}
+.header-default h1{font-size:24px;color:#fff;font-weight:700;letter-spacing:3px;margin-bottom:6px}
+.header-default .subtitle{font-size:14px;color:rgba(255,255,255,0.7);letter-spacing:2px}
+.header-default .auth{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.12);padding:6px 16px;border-radius:20px;margin-top:14px;font-size:12px;color:rgba(255,255,255,0.8)}
 
-/* 容器 */
 .container{padding:16px;padding-bottom:40px}
 
 /* 标签条 */
-.tags-bar{display:flex;justify-content:center;gap:12px;padding:12px 16px;flex-wrap:wrap}
-.tag-item{display:flex;flex-direction:column;align-items:center;gap:4px}
-.tag-circle{width:42px;height:42px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
-.tag-label{font-size:11px;color:#666}
+.tags-bar{display:flex;justify-content:center;gap:16px;padding:16px 16px;flex-wrap:wrap}
+.tag-item{display:flex;flex-direction:column;align-items:center;gap:5px}
+.tag-circle{width:48px;height:48px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.08);font-size:22px}
+.tag-label{font-size:11px;color:#666;font-weight:500}
 
 /* 卡片 */
 .card{background:#fff;border-radius:16px;margin-bottom:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.04)}
@@ -34,8 +40,8 @@ img{max-width:100%;display:block}
 .card-title{font-size:16px;font-weight:600;color:#2d5a27}
 .card-body{padding:20px}
 
-/* 产品图片轮播 */
-.gallery{position:relative;width:100%;overflow:hidden;border-radius:16px 16px 0 0}
+/* 封面图 */
+.gallery{position:relative;width:100%;overflow:hidden}
 .gallery img{width:100%;height:220px;object-fit:cover}
 .gallery-badge{position:absolute;bottom:12px;left:12px;background:rgba(0,0,0,0.5);color:#fff;padding:4px 12px;border-radius:20px;font-size:12px;backdrop-filter:blur(4px)}
 
@@ -47,40 +53,24 @@ img{max-width:100%;display:block}
 .info-table td:first-child{color:#999;width:72px;white-space:nowrap}
 .info-table td:last-child{color:#333;font-weight:500}
 
-/* 产地描述 */
+/* 产地 */
 .origin-desc{font-size:14px;line-height:1.9;color:#555;margin-bottom:16px}
 .origin-tags{display:flex;gap:8px;flex-wrap:wrap}
 .origin-tag{background:#e8f5e9;color:#2d5a27;padding:6px 14px;border-radius:20px;font-size:12px}
-
-/* 产地大图 */
 .origin-photo{width:100%;border-radius:12px;margin-bottom:16px}
 
-/* 农户信息 */
+/* 农户 */
 .farmer-card{display:flex;gap:16px;align-items:flex-start}
 .farmer-avatar{width:80px;height:80px;border-radius:12px;object-fit:cover;flex-shrink:0}
 .farmer-avatar-placeholder{width:80px;height:80px;background:#e8e0d0;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:36px}
 .farmer-name{font-size:16px;font-weight:600;color:#333;margin-bottom:8px}
 .farmer-meta{font-size:13px;color:#666;line-height:1.8}
 
-/* 工艺流程 */
-.process-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.process-step{background:#f8f8f8;border-radius:12px;padding:16px;text-align:center}
-.step-icon{font-size:28px;margin-bottom:8px}
-.step-title{font-size:14px;font-weight:600;color:#333;margin-bottom:4px}
-.step-desc{font-size:12px;color:#888}
-
-/* 检测报告 */
-.report-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.report-item{border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);cursor:pointer;position:relative}
-.report-item img{width:100%;height:180px;object-fit:cover}
-.report-label{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.6);color:#fff;padding:8px;font-size:12px;text-align:center;backdrop-filter:blur(4px)}
-
-/* 视频 */
-.video-container{position:relative;border-radius:12px;overflow:hidden;margin-bottom:12px;background:#000}
-.video-container video{width:100%;display:block}
-.video-placeholder{width:100%;height:200px;background:linear-gradient(135deg,#2d5a27,#1e3f1a);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;cursor:pointer;border-radius:12px}
-.video-placeholder .play-icon{width:48px;height:48px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:8px}
-.video-placeholder span{font-size:13px;opacity:0.8}
+/* 采摘/加工现场图 */
+.harvest-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.harvest-item{border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);cursor:pointer;position:relative}
+.harvest-item img{width:100%;height:140px;object-fit:cover}
+.harvest-label{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.5);color:#fff;padding:6px;font-size:11px;text-align:center;backdrop-filter:blur(4px)}
 
 /* 时间轴 */
 .timeline-row{display:flex;align-items:center;gap:12px;padding:14px 16px;background:#f8f8f8;border-radius:12px}
@@ -89,19 +79,32 @@ img{max-width:100%;display:block}
 .timeline-title{font-size:14px;font-weight:600;color:#333}
 .timeline-sub{font-size:12px;color:#888;margin-top:2px}
 
-/* 产品图展示 */
+/* 检测报告 */
+.report-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.report-item{border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);cursor:pointer;position:relative}
+.report-item img{width:100%;height:180px;object-fit:cover}
+.report-label{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.6);color:#fff;padding:8px;font-size:12px;text-align:center;backdrop-filter:blur(4px)}
+
+/* 产品展示 */
 .product-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.product-item{border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.product-item{border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);cursor:pointer}
 .product-item img{width:100%;height:160px;object-fit:cover}
 .product-item .p-label{padding:8px 12px;font-size:12px;color:#666;text-align:center;background:#f8f8f8}
+
+/* 联系我们 */
+.contact-row{display:flex;align-items:center;gap:8px;padding:12px 0;border-bottom:1px solid #f5f5f5}
+.contact-row:last-child{border-bottom:none}
+.contact-label{color:#999;font-size:14px;width:50px;flex-shrink:0}
+.contact-value{flex:1;color:#333;font-size:14px;font-weight:500}
+.contact-copy{padding:5px 12px;background:#f0f8f0;color:#2d5a27;border:1px solid #2d5a27;border-radius:8px;font-size:12px;cursor:pointer;flex-shrink:0}
+.contact-copy:active{background:#2d5a27;color:#fff}
 
 /* 底部 */
 .footer{background:#2d5a27;padding:32px 24px;text-align:center;margin-top:8px;position:relative}
 .footer::before{content:'';position:absolute;top:0;left:0;right:0;height:24px;background:#f5f0e8;border-radius:0 0 24px 24px}
-.footer-text{color:rgba(255,255,255,0.7);font-size:13px;line-height:1.8;padding-top:16px}
-.footer-brand{color:#fff;font-size:18px;font-weight:700;margin-top:16px;letter-spacing:3px}
-.footer-links{display:flex;justify-content:center;gap:24px;margin-top:20px}
-.footer-link{color:rgba(255,255,255,0.8);font-size:13px;text-decoration:none}
+.footer-line1{color:rgba(255,255,255,0.85);font-size:14px;line-height:1.8;padding-top:16px;letter-spacing:1px}
+.footer-line2{color:rgba(255,255,255,0.7);font-size:13px;line-height:1.8;margin-top:4px}
+.footer-line3{color:rgba(255,255,255,0.5);font-size:12px;line-height:1.8;margin-top:8px}
 
 /* 图片查看器 */
 .viewer{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:999;align-items:center;justify-content:center;cursor:pointer}
@@ -114,7 +117,6 @@ img{max-width:100%;display:block}
 .loading .spinner{width:32px;height:32px;border:3px solid #e0e0e0;border-top-color:#2d5a27;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* 扫码次数 */
 .scan-info{text-align:center;padding:8px;font-size:12px;color:#999}
 </style>
 </head>
@@ -127,53 +129,46 @@ img{max-width:100%;display:block}
   </div>
 </div>
 
-<!-- 图片查看器 -->
 <div class="viewer" id="viewer" onclick="closeViewer()">
   <div class="close-btn">×</div>
   <img id="viewerImg" src="" alt="">
 </div>
 
 <script>
-const PRODUCT_ID = new URLSearchParams(window.location.search).get('id') || 'QJ2024052001';
+const PRODUCT_ID = new URLSearchParams(window.location.search).get('id') || '';
+const BANNER_URL = 'banner.jpg?t=' + Date.now();
 
-// 从 products.json 加载数据
 async function loadProducts() {
   try {
     const resp = await fetch('products.json?t=' + Date.now());
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
     return await resp.json();
   } catch (e) {
-    console.warn('无法加载 products.json，使用内置数据', e);
-    // 如果 fetch 失败（本地打开等），返回空对象
+    console.warn('无法加载 products.json', e);
     return null;
   }
 }
 
-// 内置备用数据（仅当 products.json 加载失败时使用）
 const FALLBACK_PRODUCTS = {
-  "QJ2024052001": {
-    brand: "云南巧家山野", name: "云南巧家干青花椒",
-    subtitle: "源自北纬27°的高山馈赠", coverImg: "img_cover.jpg",
+  "XHHJ2026071501": {
+    brand: "星禾优选", name: "云南巧家干青花椒",
+    subtitle: "源自北纬27°的高山馈赠", productType: "HJ",
+    coverImg: "img_cover.jpg",
     origin: "云南省昭通市巧家县", altitude: "1200-1800米",
-    pickDate: "2024年5月15日", produceDate: "2024年5月20日",
-    netWeight: "250g", shelfLife: "18个月", batchNo: "QJ2024052001",
-    originDesc: "云南省昭通市巧家县，地处金沙江畔，属于北纬27°高原山地气候，日照充足，昼夜温差大，土壤肥沃，水源纯净，非常适合青花椒生长，造就了果实饱满、麻香持久的优良品质。",
+    pickDate: "2026年7月15日", processingTime: "2026年7月15日", produceDate: "2026年7月20日",
+    netWeight: "250g", shelfLife: "18个月", batchNo: "XHHJ2026071501",
+    originDesc: "云南省昭通市巧家县，地处金沙江畔，属于北纬27°高原山地气候，日照充足，昼夜温差大，土壤肥沃，水源纯净，造就了优良品质。",
     originTags: ["高山种植", "日照充足", "土壤肥沃", "水源纯净"],
     originPhoto: "img_origin_farm.jpg",
     farmerName: "李大哥", farmerPhoto: "img_farmer.jpg",
     farmerExp: "20年", farmerArea: "50亩", farmerMethod: "生态种植，不使用化肥农药",
-    processSteps: [
-      {icon:"🤲",title:"人工采摘",desc:"清晨逐穗手摘"},
-      {icon:"☀️",title:"天然晾晒",desc:"太阳直晒烘干"},
-      {icon:"🔍",title:"筛选去杂",desc:"多道人工筛选"},
-      {icon:"📦",title:"密封包装",desc:"锁鲜罐装封存"}
-    ],
+    harvestPhotos: [],
     reports: [{title:"农残检测报告",img:"img_report.jpg"}],
     productImgs: [{title:"干青花椒（成品）",img:"img_product.jpg"}],
     videos: [],
-    brandStory: "我们来自云南巧家，世代以种植花椒为生，坚守传统农耕，不忘初心。",
-    contact: {phone:"199 1234 5678",wechat:"qiaojiahuajiao",address:"云南省昭通市巧家县",shop:"巧家山野"},
-    scanCount: 128
+    brandStory: "扎根昭通滇东北高原，星禾优选溯源管理系统，记录青花椒、昭通苹果、高山土豆、核桃、板栗全生长流通链路。一码溯源，产地、种植、检测、物流全程透明可查，以数字守护本土农产品质，让山野好物的来路清晰可见，让云南高原风味安心奔赴全国与世界。",
+    contact: {phone:"15758099554",wechat:"STARHE_LIGHTYEAR",address:"云南省昭通市",shop:"星禾优选云南好物"},
+    scanCount: 0
   }
 };
 
@@ -185,58 +180,103 @@ function closeViewer() {
   document.getElementById('viewer').classList.remove('active');
 }
 
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(()=>showToast('已复制')).catch(()=>{
+    const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);showToast('已复制');
+  });
+}
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;top:60px;left:50%;transform:translateX(-50%);background:#2d5a27;color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.2)';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(()=>{ t.style.opacity='0'; t.style.transition='opacity 0.3s'; }, 1500);
+  setTimeout(()=>t.remove(), 1800);
+}
+
 function render(p) {
   if (!p) {
     document.getElementById('app').innerHTML = '<div style="text-align:center;padding:80px 20px;color:#e63946">未找到该产品溯源信息<br><span style="font-size:13px;color:#888">产品ID: ' + PRODUCT_ID + '</span></div>';
     return;
   }
 
-  let videosHTML = '';
-  if (p.videos && p.videos.length > 0) {
-    videosHTML = p.videos.map(v => `
-      <div class="video-container">
-        <video controls poster="${v.cover || ''}" preload="metadata">
-          <source src="${v.url}" type="video/mp4">
-        </video>
-      </div>
-    `).join('');
-  }
-
-  document.getElementById('app').innerHTML = `
-    <!-- 顶部 -->
-    <div class="header">
-      <div class="logo">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5">
-          <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z"/>
-          <path d="M12 6c-1.5 2-3 4-3 6s1.5 4 3 4 3-2 3-4-1.5-4-3-6z"/>
-          <path d="M8 10c1-1.5 2.5-2 4-2s3 .5 4 2"/>
-        </svg>
-      </div>
-      <h1>${p.name}</h1>
-      <div class="subtitle">${p.subtitle}</div>
+  // 头部默认样式
+  let headerHTML = `
+    <div class="header-default">
+      <h1>欢迎进入星禾优选产品溯源系统</h1>
+      <div class="subtitle">寻味云贵山野·严选正宗农产</div>
       <div class="auth">✓ 官方认证溯源</div>
     </div>
+  `;
 
-    <!-- 封面图 -->
+  // 封面图区域
+  let galleryHTML = `
     <div class="gallery">
       <img src="${p.coverImg}" alt="${p.name}">
       <div class="gallery-badge">📍 ${p.origin}</div>
     </div>
+  `;
 
+  // 采摘/加工现场图内容（内嵌在card-body中，不带外层card）
+  let harvestBodyHTML = '';
+  if (p.harvestPhotos && p.harvestPhotos.length > 0) {
+    harvestBodyHTML = `
+      <div class="harvest-grid">
+        ${p.harvestPhotos.map((img, i) => `
+          <div class="harvest-item" onclick="openViewer('${img}')">
+            <img src="${img}" alt="现场照片${i+1}">
+            <div class="harvest-label">现场照片 ${i+1}</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  } else {
+    harvestBodyHTML = '<p style="color:#999;font-size:14px;text-align:center;padding:20px 0">暂无现场照片</p>';
+  }
+
+  // 产品图
+  let productImgsHTML = '';
+  if (p.productImgs && p.productImgs.length > 0) {
+    productImgsHTML = `
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">📸</div>
+          <div class="card-title">产品展示</div>
+        </div>
+        <div class="card-body">
+          <div class="product-grid">
+            ${p.productImgs.map(item => `
+              <div class="product-item" onclick="openViewer('${item.img}')">
+                <img src="${item.img}" alt="${item.title}">
+                <div class="p-label">${item.title}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  const phone = p.contact?.phone || '';
+  const wechat = p.contact?.wechat || '';
+  const address = p.contact?.address || '';
+  const shop = p.contact?.shop || '';
+
+  document.getElementById('app').innerHTML = `
+    ${headerHTML}
+    ${galleryHTML}
     <div class="container">
-      <!-- 标签条 -->
       <div class="tags-bar">
         <div class="tag-item"><div class="tag-circle">📍</div><div class="tag-label">原产地</div></div>
-        <div class="tag-item"><div class="tag-circle">🤲</div><div class="tag-label">人工采摘</div></div>
-        <div class="tag-item"><div class="tag-circle">☀️</div><div class="tag-label">自然晾晒</div></div>
-        <div class="tag-item"><div class="tag-circle">✅</div><div class="tag-label">品质严选</div></div>
+        <div class="tag-item"><div class="tag-circle">🌱</div><div class="tag-label">原生态</div></div>
+        <div class="tag-item"><div class="tag-circle">✅</div><div class="tag-label">严品质</div></div>
         <div class="tag-item"><div class="tag-circle">🔍</div><div class="tag-label">放心溯源</div></div>
       </div>
 
-      <!-- 产品信息 -->
       <div class="card">
         <div class="card-header">
-          <div class="card-icon">📋</div>
+          <div class="card-icon"></div>
           <div class="card-title">产品信息</div>
         </div>
         <div class="card-body">
@@ -253,10 +293,9 @@ function render(p) {
         </div>
       </div>
 
-      <!-- 产地溯源 -->
       <div class="card">
         <div class="card-header">
-          <div class="card-icon">🏔️</div>
+          <div class="card-icon">️</div>
           <div class="card-title">产地溯源</div>
         </div>
         <div class="card-body">
@@ -268,10 +307,9 @@ function render(p) {
         </div>
       </div>
 
-      <!-- 农户信息 -->
       <div class="card">
         <div class="card-header">
-          <div class="card-icon">👨‍🌾</div>
+          <div class="card-icon">👨‍</div>
           <div class="card-title">种植基地 / 农户信息</div>
         </div>
         <div class="card-body">
@@ -289,53 +327,32 @@ function render(p) {
         </div>
       </div>
 
-      <!-- 采摘与加工 -->
       <div class="card">
         <div class="card-header">
-          <div class="card-icon">⚙️</div>
-          <div class="card-title">采摘与加工</div>
+          <div class="card-icon"></div>
+          <div class="card-title">采摘/加工信息</div>
         </div>
         <div class="card-body">
-          <div class="process-grid">
-            ${(p.processSteps||[]).map(s => `
-              <div class="process-step">
-                <div class="step-icon">${s.icon}</div>
-                <div class="step-title">${s.title}</div>
-                <div class="step-desc">${s.desc}</div>
-              </div>
-            `).join('')}
-          </div>
+          ${harvestBodyHTML}
         </div>
       </div>
 
-      <!-- 采摘时间 -->
       <div class="card">
         <div class="card-header">
-          <div class="card-icon">📅</div>
-          <div class="card-title">采摘时间</div>
+          <div class="card-icon"></div>
+          <div class="card-title">采摘/加工时间</div>
         </div>
         <div class="card-body">
           <div class="timeline-row">
             <div class="timeline-dot"></div>
             <div class="timeline-content">
-              <div class="timeline-title">${p.pickDate}</div>
-              <div class="timeline-sub">清晨采摘 · 当日晾晒</div>
+              <div class="timeline-title">${p.processingTime || p.pickDate}</div>
+              <div class="timeline-sub">采摘加工 · 品质保障</div>
             </div>
           </div>
         </div>
       </div>
 
-      ${videosHTML ? `
-      <!-- 产地视频 -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon">🎬</div>
-          <div class="card-title">产地实拍</div>
-        </div>
-        <div class="card-body">${videosHTML}</div>
-      </div>` : ''}
-
-      <!-- 检测报告 -->
       ${p.reports && p.reports.length > 0 ? `
       <div class="card">
         <div class="card-header">
@@ -354,26 +371,8 @@ function render(p) {
         </div>
       </div>` : ''}
 
-      <!-- 产品展示 -->
-      ${p.productImgs && p.productImgs.length > 0 ? `
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon">📸</div>
-          <div class="card-title">产品展示</div>
-        </div>
-        <div class="card-body">
-          <div class="product-grid">
-            ${p.productImgs.map(item => `
-              <div class="product-item" onclick="openViewer('${item.img}')">
-                <img src="${item.img}" alt="${item.title}">
-                <div class="p-label">${item.title}</div>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-      </div>` : ''}
+      ${productImgsHTML}
 
-      <!-- 品牌故事 -->
       <div class="card">
         <div class="card-header">
           <div class="card-icon">📖</div>
@@ -384,29 +383,40 @@ function render(p) {
         </div>
       </div>
 
-      <!-- 联系我们 -->
       <div class="card">
         <div class="card-header">
           <div class="card-icon">📞</div>
           <div class="card-title">联系我们</div>
         </div>
         <div class="card-body">
-          <table class="info-table">
-            <tr><td>电话</td><td>${p.contact.phone}</td></tr>
-            <tr><td>微信</td><td>${p.contact.wechat}</td></tr>
-            <tr><td>地址</td><td>${p.contact.address}</td></tr>
-            <tr><td>店铺</td><td>搜索"${p.contact.shop}"</td></tr>
-          </table>
+          ${phone ? `<div class="contact-row">
+            <div class="contact-label">电话</div>
+            <div class="contact-value">${phone}</div>
+            <button class="contact-copy" onclick="copyText('${phone}')"> 复制</button>
+          </div>` : ''}
+          ${wechat ? `<div class="contact-row">
+            <div class="contact-label">微信</div>
+            <div class="contact-value">${wechat}</div>
+            <button class="contact-copy" onclick="copyText('${wechat}')">📋 复制</button>
+          </div>` : ''}
+          ${address ? `<div class="contact-row">
+            <div class="contact-label">地址</div>
+            <div class="contact-value">${address}</div>
+          </div>` : ''}
+          ${shop ? `<div class="contact-row">
+            <div class="contact-label">店铺</div>
+            <div class="contact-value">搜索"${shop}"</div>
+          </div>` : ''}
         </div>
       </div>
 
       <div class="scan-info">该页面已被扫码 ${p.scanCount || 0} 次</div>
     </div>
 
-    <!-- 底部 -->
     <div class="footer">
-      <div class="footer-text">一物一码 · 溯源查询<br>感谢您选择我们的产品</div>
-      <div class="footer-brand">${p.brand}</div>
+      <div class="footer-line1">一物一码·溯源查询</div>
+      <div class="footer-line2">感谢您选择我们的产品</div>
+      <div class="footer-line3">星禾光年（昭通）文化有限公司旗下电商平台</div>
     </div>
   `;
 }
@@ -415,7 +425,31 @@ function render(p) {
 (async function() {
   const products = await loadProducts();
   const allProducts = products || FALLBACK_PRODUCTS;
-  render(allProducts[PRODUCT_ID] || null);
+  const product = allProducts[PRODUCT_ID] || null;
+  
+  render(product);
+  
+  // 渲染完成后尝试加载装修图
+  if (product) {
+    const bannerImg = new Image();
+    bannerImg.onload = function() {
+      const headerEl = document.querySelector('.header-default');
+      if (headerEl) {
+        headerEl.outerHTML = `
+          <div class="header">
+            <img class="header-bg" src="${BANNER_URL}" alt="星禾优选">
+            <div class="header-overlay"></div>
+            <div class="header-content">
+              <h1>欢迎进入星禾优选产品溯源系统</h1>
+              <div class="subtitle">寻味云贵山野·严选正宗农产</div>
+              <div class="auth">✓ 官方认证溯源</div>
+            </div>
+          </div>
+        `;
+      }
+    };
+    bannerImg.src = BANNER_URL;
+  }
 })();
 </script>
 </body>
