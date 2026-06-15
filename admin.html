@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>溯源管理 · 星禾优选</title>
+<title>溯源管理·星禾优选</title>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -46,11 +47,17 @@ a{color:#2d5a27;text-decoration:none}
 .form-group{margin-bottom:14px}
 .form-group label{display:block;font-size:12px;color:#888;margin-bottom:5px;font-weight:500}
 .form-group input,.form-group textarea,.form-group select{width:100%;padding:10px 12px;border:1px solid #e0e0e0;border-radius:10px;font-size:14px;font-family:inherit;outline:none;background:#fff;-webkit-appearance:none}
-.form-group input:focus,.form-group textarea:focus{border-color:#2d5a27}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:#2d5a27}
 .form-group textarea{resize:vertical;min-height:60px}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .form-row .form-group{margin-bottom:0}
 @media(max-width:400px){.form-row{grid-template-columns:1fr}}
+
+/* 复制按钮 */
+.input-copy{position:relative;display:flex;gap:6px}
+.input-copy input{flex:1}
+.input-copy .btn-copy{flex-shrink:0;padding:10px 14px;background:#f0f8f0;color:#2d5a27;border:1px solid #2d5a27;border-radius:10px;font-size:12px;cursor:pointer;white-space:nowrap}
+.input-copy .btn-copy:active{background:#2d5a27;color:#fff}
 
 /* 图片上传 */
 .img-upload{position:relative;width:100%;aspect-ratio:16/10;border:2px dashed #ddd;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;background:#fafafa;-webkit-tap-highlight-color:transparent}
@@ -73,6 +80,19 @@ a{color:#2d5a27;text-decoration:none}
 .img-upload-small.has-img .upload-hint{background:rgba(0,0,0,0.4);width:100%;height:100%;color:#fff;opacity:0;transition:opacity 0.2s}
 .img-upload-small.has-img:active .upload-hint{opacity:1}
 .img-label{font-size:12px;color:#888;margin-bottom:4px}
+
+/* 多图上传 */
+.multi-img-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.multi-img-item{position:relative;aspect-ratio:1;border:2px dashed #ddd;border-radius:10px;overflow:hidden;background:#fafafa;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.multi-img-item:active{border-color:#2d5a27}
+.multi-img-item.has-img{border-style:solid;border-color:#e0e0e0}
+.multi-img-item img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.multi-img-item .upload-hint{position:relative;z-index:1;text-align:center;pointer-events:none}
+.multi-img-item .upload-hint .icon{font-size:22px;opacity:0.4}
+.multi-img-item .upload-hint .text{font-size:10px;color:#999;margin-top:2px}
+.multi-img-item .del-btn{position:absolute;top:2px;right:2px;width:22px;height:22px;background:rgba(0,0,0,0.6);color:#fff;border:none;border-radius:50%;font-size:12px;cursor:pointer;z-index:2;display:none;align-items:center;justify-content:center}
+.multi-img-item:hover .del-btn{display:flex}
+.multi-img-item .del-btn:active{background:#e63946}
 
 /* 产品列表 */
 .product-list-item{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid #f5f5f5;gap:12px}
@@ -109,7 +129,7 @@ a{color:#2d5a27;text-decoration:none}
 /* 设置弹窗 */
 .setting-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:center;justify-content:center}
 .setting-overlay.active{display:flex}
-.setting-card{background:#fff;border-radius:16px;padding:24px;max-width:400px;width:90%}
+.setting-card{background:#fff;border-radius:16px;padding:24px;max-width:420px;width:90%;max-height:90vh;overflow-y:auto}
 .setting-card h3{font-size:16px;margin-bottom:4px;color:#2d5a27}
 .setting-card .desc{font-size:12px;color:#888;margin-bottom:16px;line-height:1.6}
 .setting-card .desc a{color:#2d5a27;font-weight:600}
@@ -146,6 +166,10 @@ a{color:#2d5a27;text-decoration:none}
 .guide-banner .gb-icon{font-size:32px;flex-shrink:0}
 .guide-banner .gb-text{flex:1;font-size:13px;line-height:1.6}
 .guide-banner .gb-text b{display:block;font-size:15px;margin-bottom:2px}
+
+/* 店铺装修预览 */
+.banner-preview{width:100%;aspect-ratio:16/9;border-radius:12px;overflow:hidden;border:2px solid #e0e0e0;margin-top:8px;background:#f0f0f0}
+.banner-preview img{width:100%;height:100%;object-fit:cover}
 </style>
 </head>
 <body>
@@ -153,7 +177,7 @@ a{color:#2d5a27;text-decoration:none}
 <!-- 顶栏 -->
 <div class="topbar">
   <div>
-    <h1>🌿 溯源管理</h1>
+    <h1>🌿 星禾优选溯源管理系统</h1>
   </div>
   <div class="status">
     <div class="status-dot" id="statusDot"></div>
@@ -198,7 +222,7 @@ a{color:#2d5a27;text-decoration:none}
         <button class="btn btn-sm btn-primary" onclick="openEdit()">+ 新增</button>
       </div>
       <div id="productList">
-        <div class="empty"><div class="icon">📦</div><p>暂无批次，点击上方新增</p></div>
+        <div class="empty"><div class="icon"></div><p>暂无批次，点击上方新增</p></div>
       </div>
     </div>
   </div>
@@ -221,23 +245,33 @@ a{color:#2d5a27;text-decoration:none}
   <div class="edit-section">
     <div class="edit-section-title">📋 基本信息</div>
     <div class="form-group">
-      <label>批次编号 *</label>
-      <input type="text" id="f_batchNo" placeholder="自动生成">
+      <label>产品类型 *</label>
+      <select id="f_productType" onchange="updateBatchNo()">
+        <option value="HJ">花椒（HJ）</option>
+        <option value="TD">土豆（TD）</option>
+        <option value="HT">核桃（HT）</option>
+        <option value="PG">苹果（PG）</option>
+        <option value="BL">板栗（BL）</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>批次编号 * <span style="color:#2d5a27;font-weight:600">格式：XH + 类型 + 日期 + 序号</span></label>
+      <input type="text" id="f_batchNo" placeholder="自动生成，如 XHHJ2026071501">
     </div>
     <div class="form-row">
       <div class="form-group">
         <label>产品名称 *</label>
-        <input type="text" id="f_name" value="云南巧家干青花椒">
+        <input type="text" id="f_name" placeholder="如：云南巧家干青花椒">
       </div>
       <div class="form-group">
         <label>副标题</label>
-        <input type="text" id="f_subtitle" value="源自北纬27°的高山馈赠">
+        <input type="text" id="f_subtitle" placeholder="如：源自北纬27°的高山馈赠">
       </div>
     </div>
     <div class="form-row">
       <div class="form-group">
         <label>产地</label>
-        <input type="text" id="f_origin" value="云南省昭通市巧家县">
+        <input type="text" id="f_origin" value="云南省昭通市">
       </div>
       <div class="form-group">
         <label>海拔</label>
@@ -270,7 +304,7 @@ a{color:#2d5a27;text-decoration:none}
     <div class="edit-section-title">📸 产品图片</div>
     <div class="img-label">封面大图</div>
     <div class="img-upload" id="imgCover" onclick="pickImage('cover')">
-      <div class="upload-hint"><div class="icon">📷</div><div class="text">点击上传封面图</div></div>
+      <div class="upload-hint"><div class="icon">📷</div><div class="text">点击上传封面图（支持拍照/图库）</div></div>
     </div>
     <div style="height:10px"></div>
     <div class="img-upload-row">
@@ -281,16 +315,27 @@ a{color:#2d5a27;text-decoration:none}
         </div>
       </div>
       <div>
-        <div class="img-label">产品图</div>
-        <div class="img-upload-small" id="imgProduct" onclick="pickImage('product')">
-          <div class="upload-hint"><div class="icon">📦</div><div class="text">产品照片</div></div>
+        <div class="img-label">农户照片</div>
+        <div class="img-upload-small" id="imgFarmer" onclick="pickImage('farmer')">
+          <div class="upload-hint"><div class="icon">👨‍</div><div class="text">农户照片</div></div>
         </div>
       </div>
     </div>
   </div>
 
   <div class="edit-section">
-    <div class="edit-section-title">👨‍🌾 农户信息</div>
+    <div class="edit-section-title"> 采摘/加工现场图</div>
+    <div class="img-label">上传采摘或加工现场照片（可多张）</div>
+    <div class="multi-img-grid" id="harvestImgGrid">
+      <div class="multi-img-item" onclick="pickHarvestImg()">
+        <div class="upload-hint"><div class="icon">➕</div><div class="text">添加照片</div></div>
+      </div>
+    </div>
+    <input type="file" id="harvestFileInput" accept="image/*" multiple style="display:none">
+  </div>
+
+  <div class="edit-section">
+    <div class="edit-section-title">👨‍ 农户信息</div>
     <div class="form-row">
       <div class="form-group">
         <label>负责人姓名</label>
@@ -311,16 +356,12 @@ a{color:#2d5a27;text-decoration:none}
         <input type="text" id="f_farmerMethod" placeholder="生态种植">
       </div>
     </div>
-    <div class="img-label">农户照片</div>
-    <div class="img-upload-small" id="imgFarmer" onclick="pickImage('farmer')" style="max-width:200px;aspect-ratio:1">
-      <div class="upload-hint"><div class="icon">👨‍🌾</div><div class="text">农户照片</div></div>
-    </div>
   </div>
 
   <div class="edit-section">
     <div class="edit-section-title">🏔️ 产地描述</div>
     <div class="form-group">
-      <textarea id="f_originDesc" rows="3" placeholder="描述产地的自然环境...">云南省昭通市巧家县，地处金沙江畔，属于北纬27°高原山地气候，日照充足，昼夜温差大，土壤肥沃，水源纯净，非常适合青花椒生长，造就了果实饱满、麻香持久的优良品质。</textarea>
+      <textarea id="f_originDesc" rows="3" placeholder="描述产地的自然环境...">云南省昭通市巧家县，地处金沙江畔，属于北纬27°高原山地气候，日照充足，昼夜温差大，土壤肥沃，水源纯净，造就了优良品质。</textarea>
     </div>
     <div class="form-group">
       <label>产地标签（逗号分隔）</label>
@@ -329,7 +370,7 @@ a{color:#2d5a27;text-decoration:none}
   </div>
 
   <div class="edit-section">
-    <div class="edit-section-title">📄 检测报告</div>
+    <div class="edit-section-title"> 检测报告</div>
     <div id="reportList"></div>
     <button class="btn btn-sm btn-outline" onclick="addReportRow()" style="margin-top:6px">+ 添加报告</button>
   </div>
@@ -337,7 +378,7 @@ a{color:#2d5a27;text-decoration:none}
   <div class="edit-section">
     <div class="edit-section-title">📖 品牌故事</div>
     <div class="form-group">
-      <textarea id="f_brandStory" rows="3">我们来自云南巧家，世代以种植花椒为生，坚守传统农耕，不忘初心。只为给您带来一份来自高山的自然味道。</textarea>
+      <textarea id="f_brandStory" rows="4">扎根昭通滇东北高原，星禾优选溯源管理系统，记录青花椒、昭通苹果、高山土豆、核桃、板栗全生长流通链路。一码溯源，产地、种植、检测、物流全程透明可查，以数字守护本土农产品质，让山野好物的来路清晰可见，让云南高原风味安心奔赴全国与世界。</textarea>
     </div>
   </div>
 
@@ -346,21 +387,27 @@ a{color:#2d5a27;text-decoration:none}
     <div class="form-row">
       <div class="form-group">
         <label>电话</label>
-        <input type="text" id="f_phone" placeholder="199 1234 5678">
+        <div class="input-copy">
+          <input type="text" id="f_phone" value="15758099554">
+          <button class="btn-copy" onclick="copyField('f_phone')">📋 复制</button>
+        </div>
       </div>
       <div class="form-group">
         <label>微信</label>
-        <input type="text" id="f_wechat" placeholder="qiaojiahuajiao">
+        <div class="input-copy">
+          <input type="text" id="f_wechat" value="STARHE_LIGHTYEAR">
+          <button class="btn-copy" onclick="copyField('f_wechat')">📋 复制</button>
+        </div>
       </div>
     </div>
     <div class="form-row">
       <div class="form-group">
         <label>地址</label>
-        <input type="text" id="f_address" value="云南省昭通市巧家县">
+        <input type="text" id="f_address" value="云南省昭通市">
       </div>
       <div class="form-group">
         <label>店铺名称</label>
-        <input type="text" id="f_shop" value="巧家山野">
+        <input type="text" id="f_shop" value="星禾优选云南好物">
       </div>
     </div>
   </div>
@@ -410,6 +457,16 @@ a{color:#2d5a27;text-decoration:none}
       <label>仓库名</label>
       <input type="text" id="s_repo" value="Starhely">
     </div>
+    
+    <div style="border-top:1px solid #eee;padding-top:16px;margin-top:16px">
+      <div class="form-group">
+        <label>🖼️ 店铺装修图（溯源页头部横幅）</label>
+        <div class="img-upload" id="bannerPreview" onclick="pickBannerImg()" style="aspect-ratio:16/9">
+          <div class="upload-hint"><div class="icon">🏪</div><div class="text">点击上传店铺装修图</div></div>
+        </div>
+      </div>
+    </div>
+    
     <div style="display:flex;gap:8px;margin-top:16px">
       <button class="btn btn-outline" onclick="closeSetting()" style="flex:1">取消</button>
       <button class="btn btn-primary" onclick="saveSetting()" style="flex:1">保存</button>
@@ -433,8 +490,10 @@ a{color:#2d5a27;text-decoration:none}
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
-<!-- 隐藏文件选择器 -->
-<input type="file" id="fileInput" accept="image/*" capture="environment" style="display:none">
+<!-- 隐藏文件选择器（支持拍照和图库） -->
+<input type="file" id="fileInput" accept="image/*" style="display:none">
+<!-- 隐藏文件选择器（仅图库，无camera限制） -->
+<input type="file" id="fileInputGallery" accept="image/*" style="display:none">
 
 <script>
 // ====== 全局配置 ======
@@ -443,21 +502,30 @@ const SITE_BASE = () => `https://${getConfig().owner.toLowerCase()}.github.io/${
 
 let config = { token:'', owner:'STARHELY', repo:'Starhely' };
 let products = {};
-let images = {}; // { batchId: { cover:'data:image/...', origin:'...', ... } }
+let images = {};
+let harvestImages = {}; // { batchId: [dataUrl1, dataUrl2, ...] }
+let bannerImage = null; // 店铺装修图
 let editingId = null;
 let currentImgType = null;
 let currentQRId = null;
+let harvestUploadIndex = -1;
 
 // ====== 初始化 ======
 function init() {
   const c = localStorage.getItem('trace_config');
   if (c) { config = JSON.parse(c); }
   
-  const p = localStorage.getItem('trace_products_v3');
+  const p = localStorage.getItem('trace_products_v4');
   if (p) { products = JSON.parse(p); }
   
-  const img = localStorage.getItem('trace_images_v3');
+  const img = localStorage.getItem('trace_images_v4');
   if (img) { images = JSON.parse(img); }
+  
+  const hi = localStorage.getItem('trace_harvest_v1');
+  if (hi) { harvestImages = JSON.parse(hi); }
+  
+  const bn = localStorage.getItem('trace_banner_v1');
+  if (bn) { bannerImage = bn; setBannerPreview(bn); }
   
   updateStatus();
   renderList();
@@ -468,13 +536,13 @@ function init() {
   }
 }
 
-function getConfig() {
-  return config;
-}
+function getConfig() { return config; }
 
 function saveData() {
-  localStorage.setItem('trace_products_v3', JSON.stringify(products));
-  localStorage.setItem('trace_images_v3', JSON.stringify(images));
+  localStorage.setItem('trace_products_v4', JSON.stringify(products));
+  localStorage.setItem('trace_images_v4', JSON.stringify(images));
+  localStorage.setItem('trace_harvest_v1', JSON.stringify(harvestImages));
+  if (bannerImage) localStorage.setItem('trace_banner_v1', bannerImage);
 }
 
 // ====== 状态 ======
@@ -489,6 +557,25 @@ function updateStatus() {
     dot.classList.remove('ok');
     txt.textContent = '未连接';
   }
+}
+
+// ====== 批次编号自动生成 ======
+function updateBatchNo() {
+  if (editingId) return; // 编辑模式不改编号
+  const type = document.getElementById('f_productType').value;
+  const now = new Date();
+  const dateStr = now.getFullYear() + String(now.getMonth()+1).padStart(2,'0') + String(now.getDate()).padStart(2,'0');
+  
+  // 计算今天已有的同类型序号
+  let maxSeq = 0;
+  Object.keys(products).forEach(id => {
+    if (id.startsWith('XH' + type) && id.includes(dateStr)) {
+      const seq = parseInt(id.slice(-2));
+      if (seq > maxSeq) maxSeq = seq;
+    }
+  });
+  const seq = String(maxSeq + 1).padStart(2, '0');
+  document.getElementById('f_batchNo').value = 'XH' + type + dateStr + seq;
 }
 
 // ====== 列表 ======
@@ -530,6 +617,8 @@ function updateStats() {
   document.getElementById('statFarmers').textContent = farmers.size;
   let imgCount = 0;
   Object.values(images).forEach(bi => { Object.values(bi).forEach(v => { if(v) imgCount++; }); });
+  Object.values(harvestImages).forEach(arr => { imgCount += (arr||[]).length; });
+  if (bannerImage) imgCount++;
   document.getElementById('statImgs').textContent = imgCount;
 }
 
@@ -538,6 +627,7 @@ function openSetting() {
   document.getElementById('s_token').value = config.token || '';
   document.getElementById('s_owner').value = config.owner || '';
   document.getElementById('s_repo').value = config.repo || '';
+  if (bannerImage) setBannerPreview(bannerImage);
   document.getElementById('settingOverlay').classList.add('active');
 }
 function closeSetting() { document.getElementById('settingOverlay').classList.remove('active'); }
@@ -546,10 +636,46 @@ function saveSetting() {
   config.owner = document.getElementById('s_owner').value.trim();
   config.repo = document.getElementById('s_repo').value.trim();
   if (!config.token) { showToast('请输入Token','error'); return; }
-  localStorage.setItem('trace_config', JSON.stringify(config));
+  saveData();
   updateStatus();
   closeSetting();
   showToast('✓ 设置已保存', 'success');
+}
+
+// ====== 店铺装修图 ======
+function pickBannerImg() {
+  const inp = document.getElementById('fileInputGallery');
+  inp.onchange = function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      compressImage(ev.target.result, 1600, 0.85, function(compressed) {
+        bannerImage = compressed;
+        setBannerPreview(compressed);
+        saveData();
+        showToast('✓ 装修图已保存', 'success');
+      });
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+  inp.click();
+}
+
+function setBannerPreview(dataUrl) {
+  const el = document.getElementById('bannerPreview');
+  if (!el) return;
+  if (dataUrl) {
+    el.classList.add('has-img');
+    let imgEl = el.querySelector('img');
+    if (!imgEl) { imgEl = document.createElement('img'); el.appendChild(imgEl); }
+    imgEl.src = dataUrl;
+  } else {
+    el.classList.remove('has-img');
+    const imgEl = el.querySelector('img');
+    if (imgEl) imgEl.remove();
+  }
 }
 
 // ====== 编辑面板 ======
@@ -562,22 +688,21 @@ function openEdit(id) {
   if (id && products[id]) {
     document.getElementById('editTitle').textContent = '编辑：' + id;
     fillEditForm(products[id], id);
-    // 加载已有图片
     const imgs = images[id] || {};
     setImgPreview('cover', imgs.cover || null);
     setImgPreview('origin', imgs.origin || null);
-    setImgPreview('product', imgs.product || null);
     setImgPreview('farmer', imgs.farmer || null);
+    renderHarvestImages(id);
   } else {
     document.getElementById('editTitle').textContent = '新增批次';
     resetEditForm();
     setImgPreview('cover', null);
     setImgPreview('origin', null);
-    setImgPreview('product', null);
     setImgPreview('farmer', null);
+    renderHarvestImages(null);
+    updateBatchNo();
   }
   
-  // 重置报告列表
   document.getElementById('reportList').innerHTML = '';
   if (id && products[id] && products[id].reports) {
     products[id].reports.forEach(r => addReportRow(r.title, r.imgName));
@@ -592,11 +717,10 @@ function closeEdit() {
 
 function resetEditForm() {
   const now = new Date();
-  const autoId = 'QJ' + now.getFullYear() + String(now.getMonth()+1).padStart(2,'0') + String(now.getDate()).padStart(2,'0') + String(Math.floor(Math.random()*900)+100);
-  document.getElementById('f_batchNo').value = autoId;
-  document.getElementById('f_name').value = '云南巧家干青花椒';
-  document.getElementById('f_subtitle').value = '源自北纬27°的高山馈赠';
-  document.getElementById('f_origin').value = '云南省昭通市巧家县';
+  document.getElementById('f_productType').value = 'HJ';
+  document.getElementById('f_name').value = '';
+  document.getElementById('f_subtitle').value = '';
+  document.getElementById('f_origin').value = '云南省昭通市';
   document.getElementById('f_altitude').value = '1200-1800米';
   document.getElementById('f_pickDate').value = '';
   document.getElementById('f_produceDate').value = '';
@@ -605,17 +729,24 @@ function resetEditForm() {
   document.getElementById('f_farmerName').value = '';
   document.getElementById('f_farmerExp').value = '';
   document.getElementById('f_farmerArea').value = '';
-  document.getElementById('f_farmerMethod').value = '生态种植，不使用化肥农药';
-  document.getElementById('f_originDesc').value = '云南省昭通市巧家县，地处金沙江畔，属于北纬27°高原山地气候，日照充足，昼夜温差大，土壤肥沃，水源纯净，非常适合青花椒生长，造就了果实饱满、麻香持久的优良品质。';
+  document.getElementById('f_farmerMethod').value = '生态种植';
+  document.getElementById('f_originDesc').value = '云南省昭通市巧家县，地处金沙江畔，属于北纬27°高原山地气候，日照充足，昼夜温差大，土壤肥沃，水源纯净，造就了优良品质。';
   document.getElementById('f_originTags').value = '高山种植,日照充足,土壤肥沃,水源纯净';
-  document.getElementById('f_brandStory').value = '我们来自云南巧家，世代以种植花椒为生，坚守传统农耕，不忘初心。只为给您带来一份来自高山的自然味道。';
-  document.getElementById('f_phone').value = '';
-  document.getElementById('f_wechat').value = '';
-  document.getElementById('f_address').value = '云南省昭通市巧家县';
-  document.getElementById('f_shop').value = '巧家山野';
+  document.getElementById('f_brandStory').value = '扎根昭通滇东北高原，星禾优选溯源管理系统，记录青花椒、昭通苹果、高山土豆、核桃、板栗全生长流通链路。一码溯源，产地、种植、检测、物流全程透明可查，以数字守护本土农产品质，让山野好物的来路清晰可见，让云南高原风味安心奔赴全国与世界。';
+  document.getElementById('f_phone').value = '15758099554';
+  document.getElementById('f_wechat').value = 'STARHE_LIGHTYEAR';
+  document.getElementById('f_address').value = '云南省昭通市';
+  document.getElementById('f_shop').value = '星禾优选云南好物';
 }
 
 function fillEditForm(p, id) {
+  // 从批次编号推断产品类型
+  let pType = 'HJ';
+  if (id.startsWith('XH')) {
+    const typeCode = id.slice(2, 4);
+    if (['HJ','TD','HT','PG','BL'].includes(typeCode)) pType = typeCode;
+  }
+  document.getElementById('f_productType').value = pType;
   document.getElementById('f_batchNo').value = id;
   document.getElementById('f_name').value = p.name || '';
   document.getElementById('f_subtitle').value = p.subtitle || '';
@@ -632,10 +763,10 @@ function fillEditForm(p, id) {
   document.getElementById('f_originDesc').value = p.originDesc || '';
   document.getElementById('f_originTags').value = (p.originTags||[]).join(',');
   document.getElementById('f_brandStory').value = p.brandStory || '';
-  document.getElementById('f_phone').value = p.contact?.phone || '';
-  document.getElementById('f_wechat').value = p.contact?.wechat || '';
-  document.getElementById('f_address').value = p.contact?.address || '';
-  document.getElementById('f_shop').value = p.contact?.shop || '';
+  document.getElementById('f_phone').value = p.contact?.phone || '15758099554';
+  document.getElementById('f_wechat').value = p.contact?.wechat || 'STARHE_LIGHTYEAR';
+  document.getElementById('f_address').value = p.contact?.address || '云南省昭通市';
+  document.getElementById('f_shop').value = p.contact?.shop || '星禾优选云南好物';
 }
 
 function saveEdit() {
@@ -644,7 +775,6 @@ function saveEdit() {
   const name = document.getElementById('f_name').value.trim();
   if (!name) { showToast('请输入产品名称','error'); return; }
   
-  // 收集报告
   const reports = [];
   document.querySelectorAll('#reportList .img-row').forEach(row => {
     const t = row.querySelector('.rpt-title').value.trim();
@@ -652,14 +782,21 @@ function saveEdit() {
     if (t) reports.push({title:t, img: n || 'img_report.jpg', imgName: n || 'img_report.jpg'});
   });
   
+  // 收集采摘/加工现场图
+  const hImgs = (harvestImages[editingId || batchNo] || []).filter(Boolean);
+  
+  const pickDate = document.getElementById('f_pickDate').value;
+  
   const product = {
-    brand: "云南巧家山野",
+    brand: "星禾优选",
     name: name,
     subtitle: document.getElementById('f_subtitle').value,
+    productType: document.getElementById('f_productType').value,
     coverImg: 'img_cover.jpg',
     origin: document.getElementById('f_origin').value,
     altitude: document.getElementById('f_altitude').value,
-    pickDate: document.getElementById('f_pickDate').value,
+    pickDate: pickDate,
+    processingTime: pickDate, // 默认与采摘时间同步
     produceDate: document.getElementById('f_produceDate').value,
     netWeight: document.getElementById('f_netWeight').value,
     shelfLife: document.getElementById('f_shelfLife').value,
@@ -672,14 +809,9 @@ function saveEdit() {
     farmerExp: document.getElementById('f_farmerExp').value,
     farmerArea: document.getElementById('f_farmerArea').value,
     farmerMethod: document.getElementById('f_farmerMethod').value,
-    processSteps: [
-      {icon:"🤲",title:"人工采摘",desc:"清晨逐穗手摘"},
-      {icon:"☀️",title:"天然晾晒",desc:"太阳直晒烘干"},
-      {icon:"🔍",title:"筛选去杂",desc:"多道人工筛选"},
-      {icon:"📦",title:"密封包装",desc:"锁鲜罐装封存"}
-    ],
+    harvestPhotos: hImgs.length > 0 ? hImgs.map((_, i) => `harvest_${batchNo}_${i+1}.jpg`) : [],
     reports: reports.length > 0 ? reports : [{title:"农残检测报告",img:"img_report.jpg",imgName:"img_report.jpg"}],
-    productImgs: [{title:"干青花椒（成品）",img:"img_product.jpg"}],
+    productImgs: [], // 由发布时动态填充
     videos: [],
     brandStory: document.getElementById('f_brandStory').value,
     contact: {
@@ -691,13 +823,9 @@ function saveEdit() {
     scanCount: (products[editingId] || {}).scanCount || 0
   };
   
-  // 如果ID变了，删旧的
   if (editingId && editingId !== batchNo) {
-    // 迁移图片
-    if (images[editingId]) {
-      images[batchNo] = images[editingId];
-      delete images[editingId];
-    }
+    if (images[editingId]) { images[batchNo] = images[editingId]; delete images[editingId]; }
+    if (harvestImages[editingId]) { harvestImages[batchNo] = harvestImages[editingId]; delete harvestImages[editingId]; }
     delete products[editingId];
   }
   
@@ -710,36 +838,28 @@ function saveEdit() {
 }
 
 async function saveAndPublish() {
-  // 先保存
   const batchNo = document.getElementById('f_batchNo').value.trim();
   if (!batchNo) { showToast('请输入批次编号','error'); return; }
   const name = document.getElementById('f_name').value.trim();
   if (!name) { showToast('请输入产品名称','error'); return; }
-  
-  saveEdit(); // 保存并关闭面板
-  
-  // 延迟一下再发布，确保数据已保存
-  setTimeout(() => {
-    publishAll();
-  }, 300);
+  saveEdit();
+  setTimeout(() => { publishAll(); }, 300);
 }
 
 // ====== 图片上传 ======
 function pickImage(type) {
   currentImgType = type;
+  // 支持拍照和图库（不限制capture）
   document.getElementById('fileInput').click();
 }
 
 document.getElementById('fileInput').addEventListener('change', function(e) {
   const file = e.target.files[0];
   if (!file) return;
-  
-  // 压缩图片
   const reader = new FileReader();
   reader.onload = function(ev) {
     compressImage(ev.target.result, 1200, 0.8, function(compressed) {
       setImgPreview(currentImgType, compressed);
-      // 存储到images
       const id = editingId || document.getElementById('f_batchNo').value.trim();
       if (!id) { showToast('请先填写批次编号','error'); return; }
       if (!images[id]) images[id] = {};
@@ -750,6 +870,65 @@ document.getElementById('fileInput').addEventListener('change', function(e) {
   reader.readAsDataURL(file);
   e.target.value = '';
 });
+
+// 采摘/加工现场图 - 多图上传
+function pickHarvestImg() {
+  const inp = document.getElementById('harvestFileInput');
+  inp.onchange = function(e) {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+    const id = editingId || document.getElementById('f_batchNo').value.trim();
+    if (!id) { showToast('请先填写批次编号','error'); return; }
+    if (!harvestImages[id]) harvestImages[id] = [];
+    
+    let processed = 0;
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        compressImage(ev.target.result, 1200, 0.8, function(compressed) {
+          harvestImages[id].push(compressed);
+          processed++;
+          if (processed === files.length) {
+            saveData();
+            renderHarvestImages(id);
+            updateStats();
+            showToast('✓ 已添加' + files.length + '张照片', 'success');
+          }
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+    e.target.value = '';
+  };
+  inp.click();
+}
+
+function renderHarvestImages(id) {
+  const grid = document.getElementById('harvestImgGrid');
+  const imgs = id ? (harvestImages[id] || []) : [];
+  
+  let html = imgs.map((img, i) => `
+    <div class="multi-img-item has-img">
+      <img src="${img}">
+      <button class="del-btn" onclick="removeHarvestImg('${id}',${i})">×</button>
+    </div>
+  `).join('');
+  
+  html += `<div class="multi-img-item" onclick="pickHarvestImg()">
+    <div class="upload-hint"><div class="icon"></div><div class="text">添加照片</div></div>
+  </div>`;
+  
+  grid.innerHTML = html;
+}
+
+function removeHarvestImg(id, index) {
+  if (harvestImages[id]) {
+    harvestImages[id].splice(index, 1);
+    saveData();
+    renderHarvestImages(id);
+    updateStats();
+  }
+}
 
 function compressImage(dataUrl, maxW, quality, cb) {
   const img = new Image();
@@ -780,6 +959,14 @@ function setImgPreview(type, dataUrl) {
   }
 }
 
+// ====== 复制功能 ======
+function copyField(id) {
+  const val = document.getElementById(id).value;
+  navigator.clipboard.writeText(val).then(()=>showToast('已复制','success')).catch(()=>{
+    const t=document.createElement('textarea');t.value=val;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);showToast('已复制','success');
+  });
+}
+
 // ====== 检测报告 ======
 function addReportRow(title, imgName) {
   const div = document.createElement('div');
@@ -797,6 +984,7 @@ function deleteProduct(id) {
   if (!confirm('确定删除批次 ' + id + '？')) return;
   delete products[id];
   delete images[id];
+  delete harvestImages[id];
   saveData();
   renderList();
   updateStats();
@@ -835,7 +1023,6 @@ async function publishAll() {
   if (!config.token) { openSetting(); return; }
   if (Object.keys(products).length === 0) { showToast('暂无批次可发布','error'); return; }
   
-  // 显示进度
   const overlay = document.getElementById('publishOverlay');
   const fill = document.getElementById('progressFill');
   const text = document.getElementById('progressText');
@@ -854,52 +1041,60 @@ async function publishAll() {
   function progress(pct) { fill.style.width = pct + '%'; }
   
   try {
-    // 1. 收集所有需要上传的图片
     const allImgs = {};
+    
+    // 收集每个批次的图片
     for (const [batchId, batchImgs] of Object.entries(images)) {
       for (const [type, dataUrl] of Object.entries(batchImgs)) {
         if (!dataUrl) continue;
-        // 确定文件名
         let filename;
         if (type === 'cover') filename = `cover_${batchId}.jpg`;
         else if (type === 'origin') filename = `origin_${batchId}.jpg`;
-        else if (type === 'product') filename = `product_${batchId}.jpg`;
         else if (type === 'farmer') filename = `farmer_${batchId}.jpg`;
         else filename = `${type}_${batchId}.jpg`;
         allImgs[filename] = dataUrl;
         
-        // 更新products中的图片路径
         if (products[batchId]) {
           if (type === 'cover') products[batchId].coverImg = filename;
           else if (type === 'origin') products[batchId].originPhoto = filename;
-          else if (type === 'product') {
-            products[batchId].productImgs = [{title:"干青花椒（成品）", img:filename}];
-          }
           else if (type === 'farmer') products[batchId].farmerPhoto = filename;
         }
       }
     }
     
+    // 收集采摘/加工现场图
+    for (const [batchId, hImgs] of Object.entries(harvestImages)) {
+      if (!hImgs || !products[batchId]) continue;
+      products[batchId].harvestPhotos = [];
+      hImgs.forEach((dataUrl, i) => {
+        if (!dataUrl) return;
+        const filename = `harvest_${batchId}_${i+1}.jpg`;
+        allImgs[filename] = dataUrl;
+        products[batchId].harvestPhotos.push(filename);
+      });
+    }
+    
+    // 店铺装修图
+    if (bannerImage) {
+      allImgs['banner.jpg'] = bannerImage;
+    }
+    
     const imgEntries = Object.entries(allImgs);
-    const totalSteps = imgEntries.length + 1; // 图片 + products.json
+    const totalSteps = imgEntries.length + 1;
     let step = 0;
     
-    // 2. 上传图片
     for (const [filename, dataUrl] of imgEntries) {
       step++;
       progress((step / totalSteps) * 100);
       log(`📷 上传 ${filename}...`);
-      
       const base64 = dataUrl.split(',')[1];
       const ok = await uploadFile(filename, base64, `Update ${filename}`);
       log(ok ? '  ✓ 成功' : '  ✗ 失败');
     }
     
-    // 3. 上传 products.json
     step++;
     progress((step / totalSteps) * 90);
     log('📄 上传 products.json...');
-    
     const jsonStr = JSON.stringify(products, null, 2);
     const jsonBase64 = btoa(unescape(encodeURIComponent(jsonStr)));
     const jsonOk = await uploadFile('products.json', jsonBase64, `Update products (${Object.keys(products).length} batches)`);
@@ -910,7 +1105,7 @@ async function publishAll() {
     if (jsonOk) {
       icon.textContent = '✅';
       title.textContent = '发布成功！';
-      log('<br>🌐 网站将在1-2分钟内更新');
+      log('<br> 网站将在1-2分钟内更新');
       log(`📱 ${SITE_BASE()}index.html`);
     } else {
       icon.textContent = '⚠️';
@@ -931,12 +1126,10 @@ function closePublish() {
   document.getElementById('publishOverlay').classList.remove('active');
 }
 
-// GitHub API 上传文件
 async function uploadFile(filename, base64Content, message) {
   const { owner, repo, token } = config;
   const url = `${GITHUB_API}/repos/${owner}/${repo}/contents/${filename}`;
   
-  // 获取已有文件的sha（更新时需要）
   let sha = null;
   try {
     const resp = await fetch(url, { headers: { 'Authorization': `token ${token}` } });
@@ -946,17 +1139,13 @@ async function uploadFile(filename, base64Content, message) {
     }
   } catch(e) {}
   
-  // 上传
   const body = { message, content: base64Content };
   if (sha) body.sha = sha;
   
   try {
     const resp = await fetch(url, {
       method: 'PUT',
-      headers: {
-        'Authorization': `token ${token}`,
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     });
     return resp.ok;
