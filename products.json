@@ -3,6 +3,7 @@
     "brand": "云南巧家山野",
     "name": "云南巧家干青花椒",
     "subtitle": "源自北纬27°的高山馈赠",
+    "coverImg": "img_cover.jpg",
     "origin": "云南省昭通市巧家县",
     "altitude": "1200-1800米",
     "pickDate": "2024年5月15日",
@@ -12,16 +13,34 @@
     "batchNo": "QJ2024052001",
     "originDesc": "云南省昭通市巧家县，地处金沙江畔，属于北纬27°高原山地气候，日照充足，昼夜温差大，土壤肥沃，水源纯净，非常适合青花椒生长，造就了果实饱满、麻香持久的优良品质。",
     "originTags": ["高山种植", "日照充足", "土壤肥沃", "水源纯净"],
+    "originPhoto": "img_origin_farm.jpg",
     "farmerName": "李大哥",
+    "farmerPhoto": "img_farmer.jpg",
     "farmerExp": "20年",
     "farmerArea": "50亩",
     "farmerMethod": "生态种植，不使用化肥农药",
+    "processSteps": [
+      {"icon":"🤲","title":"人工采摘","desc":"清晨逐穗手摘"},
+      {"icon":"☀️","title":"天然晾晒","desc":"太阳直晒烘干"},
+      {"icon":"🔍","title":"筛选去杂","desc":"多道人工筛选"},
+      {"icon":"📦","title":"密封包装","desc":"锁鲜罐装封存"}
+    ],
+    "reports": [
+      {"title":"农残检测报告","img":"img_report.jpg"},
+      {"title":"重金属检测报告","img":"img_report.jpg"}
+    ],
+    "productImgs": [
+      {"title":"干青花椒（成品）","img":"img_product.jpg"},
+      {"title":"精选饱满颗粒","img":"img_cover.jpg"}
+    ],
+    "videos": [],
     "brandStory": "我们来自云南巧家，世代以种植花椒为生，坚守传统农耕，不忘初心。只为给您带来一份来自高山的自然味道。",
     "contact": {
       "phone": "199 1234 5678",
       "wechat": "qiaojiahuajiao",
       "address": "云南省昭通市巧家县",
       "shop": "巧家山野"
-    }
+    },
+    "scanCount": 128
   }
 }
