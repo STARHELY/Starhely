@@ -82,15 +82,15 @@ a{color:#2d5a27;text-decoration:none}
 
 /* 多图上传 */
 .multi-img-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.multi-img-item{position:relative;aspect-ratio:1;border:2px dashed #ddd;border-radius:10px;overflow:hidden;background:#fafafa;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.multi-img-item{position:relative;width:100%;padding-bottom:100%;border:2px dashed #ddd;border-radius:10px;overflow:hidden;background:#fafafa;display:flex;align-items:center;justify-content:center;cursor:pointer}
 .multi-img-item:active{border-color:#2d5a27}
 .multi-img-item.has-img{border-style:solid;border-color:#e0e0e0}
-.multi-img-item img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.multi-img-item .upload-hint{position:relative;z-index:1;text-align:center;pointer-events:none}
+.multi-img-item img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:1}
+.multi-img-item .upload-hint{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:2;pointer-events:none}
 .multi-img-item .upload-hint .icon{font-size:22px;opacity:0.4}
 .multi-img-item .upload-hint .text{font-size:10px;color:#999;margin-top:2px}
-.multi-img-item .del-btn{position:absolute;top:2px;right:2px;width:22px;height:22px;background:rgba(0,0,0,0.6);color:#fff;border:none;border-radius:50%;font-size:12px;cursor:pointer;z-index:2;display:none;align-items:center;justify-content:center}
-.multi-img-item:hover .del-btn{display:flex}
+.multi-img-item .del-btn{position:absolute;top:2px;right:2px;width:22px;height:22px;background:rgba(0,0,0,0.6);color:#fff;border:none;border-radius:50%;font-size:12px;cursor:pointer;z-index:3;display:none;align-items:center;justify-content:center}
+.multi-img-item:hover .del-btn,.multi-img-item:active .del-btn{display:flex}
 .multi-img-item .del-btn:active{background:#e63946}
 
 /* 产品列表 */
@@ -213,6 +213,25 @@ a{color:#2d5a27;text-decoration:none}
     </div>
   </div>
 
+  <!-- 轮播图管理 -->
+  <div class="section" style="padding-bottom:0">
+    <div class="card">
+      <div class="card-hd">
+        <h3>🎞️ 首页轮播图</h3>
+        <button class="btn btn-sm btn-outline" onclick="pickCarouselImg()" id="addCarouselBtn">+ 添加</button>
+      </div>
+      <div style="padding:12px 16px">
+        <p style="font-size:12px;color:#888;margin-bottom:10px">产品海报轮播展示，最多4张，建议宽幅比例（如 750×300）</p>
+        <div id="carouselGrid" class="multi-img-grid">
+          <div class="multi-img-item" onclick="pickCarouselImg()">
+            <div class="upload-hint"><div class="icon">➕</div><div class="text">添加海报</div></div>
+          </div>
+        </div>
+        <input type="file" id="carouselFileInput" accept="image/*" style="display:none">
+      </div>
+    </div>
+  </div>
+
   <!-- 批次列表 -->
   <div class="section">
     <div class="card">
@@ -230,6 +249,7 @@ a{color:#2d5a27;text-decoration:none}
 <!-- 底部操作栏 -->
 <div class="bottombar">
   <button class="btn btn-outline" onclick="openSetting()">⚙️ 设置</button>
+  <button class="btn btn-outline" onclick="syncFromGitHub()" id="syncBtn">🔄 同步</button>
   <button class="btn btn-publish" id="publishBtn" onclick="publishAll()">🚀 发布到网站</button>
 </div>
 
@@ -504,6 +524,7 @@ let products = {};
 let images = {};
 let harvestImages = {}; // { batchId: [dataUrl1, dataUrl2, ...] }
 let bannerImage = null; // 店铺装修图
+let carouselImages = []; // 轮播图数组 [dataUrl1, dataUrl2, ...]
 let editingId = null;
 let currentImgType = null;
 let currentQRId = null;
@@ -526,6 +547,9 @@ function init() {
   const bn = localStorage.getItem('trace_banner_v1');
   if (bn) { bannerImage = bn; setBannerPreview(bn); }
   
+  const ci = localStorage.getItem('trace_carousel_v1');
+  if (ci) { carouselImages = JSON.parse(ci); renderCarousel(); }
+  
   updateStatus();
   renderList();
   updateStats();
@@ -542,6 +566,7 @@ function saveData() {
   localStorage.setItem('trace_images_v4', JSON.stringify(images));
   localStorage.setItem('trace_harvest_v1', JSON.stringify(harvestImages));
   if (bannerImage) localStorage.setItem('trace_banner_v1', bannerImage);
+  localStorage.setItem('trace_carousel_v1', JSON.stringify(carouselImages));
 }
 
 // ====== 状态 ======
@@ -617,8 +642,62 @@ function updateStats() {
   let imgCount = 0;
   Object.values(images).forEach(bi => { Object.values(bi).forEach(v => { if(v) imgCount++; }); });
   Object.values(harvestImages).forEach(arr => { imgCount += (arr||[]).length; });
+  imgCount += carouselImages.length;
   if (bannerImage) imgCount++;
   document.getElementById('statImgs').textContent = imgCount;
+}
+
+// ====== 轮播图管理 ======
+function pickCarouselImg() {
+  if (carouselImages.length >= 4) {
+    showToast('最多添加4张轮播图', 'error');
+    return;
+  }
+  const inp = document.getElementById('carouselFileInput');
+  inp.onchange = function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      compressImage(ev.target.result, 1200, 0.85, function(compressed) {
+        carouselImages.push(compressed);
+        saveData();
+        renderCarousel();
+        updateStats();
+        showToast('✓ 已添加轮播图', 'success');
+      });
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+  inp.click();
+}
+
+function renderCarousel() {
+  const grid = document.getElementById('carouselGrid');
+  if (!grid) return;
+  
+  let html = carouselImages.map((img, i) => `
+    <div class="multi-img-item has-img">
+      <img src="${img}">
+      <button class="del-btn" onclick="removeCarouselImg(${i})">×</button>
+    </div>
+  `).join('');
+  
+  if (carouselImages.length < 4) {
+    html += `<div class="multi-img-item" onclick="pickCarouselImg()">
+      <div class="upload-hint"><div class="icon">➕</div><div class="text">添加海报</div></div>
+    </div>`;
+  }
+  
+  grid.innerHTML = html;
+}
+
+function removeCarouselImg(index) {
+  carouselImages.splice(index, 1);
+  saveData();
+  renderCarousel();
+  updateStats();
 }
 
 // ====== 设置 ======
@@ -1129,9 +1208,30 @@ async function publishAll() {
       allImgs['banner.jpg'] = bannerImage;
     }
     
-    const imgEntries = Object.entries(allImgs);
+    // 轮播图
+    const carouselFilenames = [];
+    carouselImages.forEach((dataUrl, i) => {
+      if (!dataUrl || dataUrl.startsWith('http')) return;
+      const filename = `carousel_${i+1}.jpg`;
+      allImgs[filename] = dataUrl;
+      carouselFilenames.push(filename);
+    });
+    
+    // 过滤掉已经是远程URL的图片（从GitHub同步来的）
+    const imgEntries = Object.entries(allImgs).filter(([_, dataUrl]) => {
+      return dataUrl && !dataUrl.startsWith('http://') && !dataUrl.startsWith('https://');
+    });
+    
+    const skippedCount = Object.entries(allImgs).filter(([_, dataUrl]) => {
+      return dataUrl && (dataUrl.startsWith('http://') || dataUrl.startsWith('https://'));
+    }).length;
+    
     const totalSteps = imgEntries.length + 1;
     let step = 0;
+    
+    if (skippedCount > 0) {
+      log(`⏭️ 跳过 ${skippedCount} 张已存在的图片`);
+    }
     
     for (const [filename, dataUrl] of imgEntries) {
       step++;
@@ -1149,6 +1249,14 @@ async function publishAll() {
     const jsonBase64 = btoa(unescape(encodeURIComponent(jsonStr)));
     const jsonOk = await uploadFile('products.json', jsonBase64, `Update products (${Object.keys(products).length} batches)`);
     log(jsonOk ? '  ✓ 成功' : '  ✗ 失败');
+    
+    // 发布轮播图数据
+    log('📄 上传 carousel.json...');
+    const carouselData = { images: carouselImages.map((_, i) => `carousel_${i+1}.jpg`) };
+    const carouselJsonStr = JSON.stringify(carouselData, null, 2);
+    const carouselJsonBase64 = btoa(unescape(encodeURIComponent(carouselJsonStr)));
+    const carouselOk = await uploadFile('carousel.json', carouselJsonBase64, `Update carousel (${carouselData.images.length} images)`);
+    log(carouselOk ? '  ✓ 成功' : '  ✗ 失败');
     
     progress(100);
     
@@ -1174,6 +1282,145 @@ async function publishAll() {
 
 function closePublish() {
   document.getElementById('publishOverlay').classList.remove('active');
+}
+
+// ====== 从 GitHub 同步数据 ======
+async function syncFromGitHub() {
+  if (!config.token) { openSetting(); return; }
+  
+  const btn = document.getElementById('syncBtn');
+  const originalText = btn.textContent;
+  btn.textContent = '⏳ 同步中...';
+  btn.disabled = true;
+  
+  try {
+    const { owner, repo, token } = config;
+    
+    // 1. Fetch products.json
+    showToast('正在获取产品数据...', '');
+    const productsUrl = `${GITHUB_API}/repos/${owner}/${repo}/contents/products.json`;
+    const productsResp = await fetch(productsUrl, {
+      headers: { 'Authorization': `token ${token}` }
+    });
+    
+    if (!productsResp.ok) {
+      throw new Error('无法获取 products.json');
+    }
+    
+    const productsData = await productsResp.json();
+    // 正确处理 UTF-8 编码的 base64
+    const rawBase64 = productsData.content;
+    const rawStr = atob(rawBase64);
+    const utf8Str = decodeURIComponent(escape(rawStr));
+    const productsJson = JSON.parse(utf8Str);
+    
+    // Update local products
+    products = productsJson;
+    localStorage.setItem('trace_products_v4', JSON.stringify(products));
+    
+    // 2. Fetch repo contents to find image files
+    const contentsUrl = `${GITHUB_API}/repos/${owner}/${repo}/contents`;
+    const contentsResp = await fetch(contentsUrl, {
+      headers: { 'Authorization': `token ${token}` }
+    });
+    
+    if (!contentsResp.ok) {
+      throw new Error('无法获取文件列表');
+    }
+    
+    const files = await contentsResp.json();
+    const imageFiles = files.filter(f => f.name.endsWith('.jpg') || f.name.endsWith('.png'));
+    
+    // 3. Map images to batches
+    images = {};
+    harvestImages = {};
+    
+    for (const file of imageFiles) {
+      const name = file.name;
+      
+      // Skip static images and carousel images (handled via carousel.json)
+      if (['img_cover.jpg', 'img_farmer.jpg', 'img_origin_farm.jpg', 'img_product.jpg', 'img_report.jpg', 'banner.jpg'].includes(name) || /^carousel_\d+\.jpg$/.test(name)) {
+        continue;
+      }
+      
+      // Parse filename to determine type and batch
+      // Format: cover_XHHJ2026071501.jpg, origin_..., farmer_..., harvest_XHHJ2026071501_1.jpg
+      let match = name.match(/^(cover|origin|farmer)_(.+)\.jpg$/);
+      if (match) {
+        const type = match[1];
+        const batchId = match[2];
+        if (!images[batchId]) images[batchId] = {};
+        images[batchId][type] = file.download_url;
+        continue;
+      }
+      
+      // Harvest images
+      match = name.match(/^harvest_(.+)_(\d+)\.jpg$/);
+      if (match) {
+        const batchId = match[1];
+        if (!harvestImages[batchId]) harvestImages[batchId] = [];
+        const index = parseInt(match[2]) - 1;
+        harvestImages[batchId][index] = file.download_url;
+      }
+    }
+    
+    localStorage.setItem('trace_images_v4', JSON.stringify(images));
+    localStorage.setItem('trace_harvest_v1', JSON.stringify(harvestImages));
+    
+    // 4. Fetch banner if exists
+    const bannerFile = imageFiles.find(f => f.name === 'banner.jpg');
+    if (bannerFile) {
+      bannerImage = bannerFile.download_url;
+      localStorage.setItem('trace_banner_v1', bannerImage);
+      setBannerPreview(bannerImage);
+    }
+    
+    // 5. Fetch carousel.json if exists
+    try {
+      const carouselUrl = `${GITHUB_API}/repos/${owner}/${repo}/contents/carousel.json`;
+      const carouselResp = await fetch(carouselUrl, {
+        headers: { 'Authorization': `token ${token}` }
+      });
+      
+      if (carouselResp.ok) {
+        const carouselData = await carouselResp.json();
+        // 正确处理 UTF-8 编码的 base64
+        const carouselRawStr = atob(carouselData.content);
+        const carouselUtf8Str = decodeURIComponent(escape(carouselRawStr));
+        const carouselJson = JSON.parse(carouselUtf8Str);
+        const carouselNames = carouselJson.images || [];
+        
+        // Map carousel images to URLs
+        carouselImages = carouselNames.map(name => {
+          const file = imageFiles.find(f => f.name === name);
+          return file ? file.download_url : null;
+        }).filter(Boolean);
+        
+        localStorage.setItem('trace_carousel_v1', JSON.stringify(carouselImages));
+        renderCarousel();
+      }
+    } catch(e) {
+      console.warn('No carousel.json found', e);
+    }
+    
+    // 6. Update UI
+    renderList();
+    updateStats();
+    updateStatus();
+    
+    const productCount = Object.keys(products).length;
+    const imageCount = Object.values(images).reduce((sum, batch) => sum + Object.keys(batch).length, 0);
+    const harvestCount = Object.values(harvestImages).reduce((sum, arr) => sum + (arr ? arr.filter(Boolean).length : 0), 0);
+    
+    showToast(`✓ 同步完成：${productCount}个批次，${imageCount}张图片，${carouselImages.length}张轮播图`, 'success');
+    
+  } catch(err) {
+    console.error('Sync error:', err);
+    showToast('✗ 同步失败：' + err.message, 'error');
+  } finally {
+    btn.textContent = originalText;
+    btn.disabled = false;
+  }
 }
 
 async function uploadFile(filename, base64Content, message) {
